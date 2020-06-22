@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from gui import Startup_frame
+from gui import Startup_frame, Style
 
 class Application(tk.Tk):
 
@@ -9,11 +9,17 @@ class Application(tk.Tk):
         super().__init__(*rootargs, **rootkwargs)
         self.title(application_name)
         self.resizable(False, False)
+        self.SCREEN_WIDTH = self.winfo_screenwidth()  # Display width
+        self.SCREEN_HEIGHT = self.winfo_screenheight()  # Display height
+        self.style = Style.Style()
 
         self.frame_objects = {} # Stores frames
         self._create_frames(Startup_frame.Startup_frame)
         self.show_frame("Startup_frame")
         self.centre_root()
+
+    def set_root_min_size(self, width, height):
+        self.minsize(width, height)
 
     def centre_root(self):
         ''' Centre root to screen no matter the size.
@@ -21,8 +27,7 @@ class Application(tk.Tk):
         :return: None
         '''
         self.update_idletasks()
-        _SCREEN_WIDTH = self.winfo_screenwidth() # Display width
-        _SCREEN_HEIGHT = self.winfo_screenheight() # Display height
+
         _ROOT_HEIGHT = self.winfo_height() # Root height
         _ROOT_WIDTH = self.winfo_width() # Root width
         _FRM_WIDTH = self.winfo_rootx() - self.winfo_x() # Find size of outer frame
@@ -48,7 +53,9 @@ class Application(tk.Tk):
         '''
         self.ungrid_all_widgets(self) # Forget all items on root
         frame_to_display = self.frame_objects.get(frame_name) # Get frame to display
-        frame_to_display.grid(row=0, column=0)
+        self.columnconfigure(index=0, weight=1)
+        self.rowconfigure(index=0, weight=1)
+        frame_to_display.grid(row=0, column=0, sticky=tk.NSEW)
 
     def show_warning_frame(self, title, text):
         '''When called, Shows a msgbox warning type
@@ -101,5 +108,5 @@ class Application(tk.Tk):
         '''
         for frame in frames_to_init:
             frame_name = frame.__name__
-            frame_object = frame(parent=self, top_level=self)  # Create frame obj
+            frame_object = frame(parent=self, top_level=self, style=self.style)  # Create frame obj
             self.frame_objects[frame_name] = frame_object  # Store frame for future reference
