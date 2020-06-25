@@ -15,9 +15,9 @@ import logging
 from PIL import Image, ImageTk
 from tkinter import ttk
 
-class Image_label(ttk.Label):
-    def __init__(self, parent, file_location, width, height, antialias=Image.ANTIALIAS):
-        super().__init__(parent,)
+class Image_label(tk.Label):
+    def __init__(self, parent, file_location, width, height, background_colour=None, antialias=Image.ANTIALIAS):
+        super().__init__(parent, bg=background_colour)
         rendered_image = ""
 
         try: # Load image
