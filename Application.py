@@ -36,6 +36,7 @@ class Application(tk.Tk):
         logging.info("Creating frames for application")
         self.frame_objects = {} # Stores frames
         self._create_frames(Startup_frame.Startup_frame, Game_frame.Game_frame)
+
         self.show_frame("Startup_frame")
         # self.show_frame("Game_frame")
         self.centre_root()
@@ -93,7 +94,7 @@ class Application(tk.Tk):
         self.columnconfigure(index=0, weight=1)
         self.rowconfigure(index=0, weight=1)
         frame_to_display.grid(row=0, column=0, sticky=tk.NSEW)
-        frame_to_display.resize_root()
+        frame_to_display.resize_min_root()
 
 
     def show_warning_frame(self, title, text):

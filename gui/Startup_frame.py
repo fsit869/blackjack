@@ -7,7 +7,7 @@ before the game starts.
 
 import tkinter as tk
 import logging
-from gui import Image_label
+from gui import Image_label, Copyright_window
 from tkinter import ttk as ttk
 
 class Startup_frame(ttk.Frame):
@@ -72,7 +72,7 @@ class Startup_frame(ttk.Frame):
         # Buttons #
         ###########
         ttk.Button(self, text="Quit", style="quit.startUpFrame.TButton", command=self.on_quit_button).pack(fill=tk.X, padx=25, pady=(5, 40), side=tk.BOTTOM)
-        ttk.Button(self, text="Copyright", style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
+        ttk.Button(self, text="Copyright", command=self.goto_copyright_window, style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
         ttk.Button(self, text="Help", command=self.is_all_widgets_filled_in, style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
         ttk.Button(self, text="Play", style="play.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
 
@@ -95,7 +95,7 @@ class Startup_frame(ttk.Frame):
         # todo this
         pass
 
-    def resize_root(self):
+    def resize_min_root(self):
         ''' Resizes root to size optimal for this frame
 
         :return: None
@@ -132,7 +132,8 @@ class Startup_frame(ttk.Frame):
         pass
 
     def goto_copyright_window(self):
-        pass
+        copyright_window = Copyright_window.Copyright_window()
+
 
     def goto_next_frame(self):
         pass

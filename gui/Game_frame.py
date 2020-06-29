@@ -30,21 +30,23 @@ class Game_frame(ttk.Frame):
         # Frame settings
 
         super().__init__(parent)
+        self.resize_min_root()
         # self.top_level.overrideredirect(True)
         # root = Tk()
-        # root.attributes('-fullscreen', True)
+        # self.top_level.attributes('-fullscreen', True)
+        # self.top_level.state('zoomed')
         logging.info("\n"
                      "------------------------------------------------\n"
                      "###### Game_frame constructor finish ######\n"
                      "------------------------------------------------")
 
-    def resize_root(self):
+    def resize_min_root(self):
         ''' Resizes root to size optimal for this frame
 
                 :return:
                 '''
         logging.info("Resizing root for Game_frame")
         self.top_level.set_root_min_size(
-            int(self.top_level.SCREEN_WIDTH),
-            int(self.top_level.SCREEN_HEIGHT),
+            int(self.top_level.SCREEN_WIDTH/2),
+            int(self.top_level.SCREEN_HEIGHT/2),
         )
