@@ -8,7 +8,7 @@ import tkinter as tk
 import logging
 from tkinter import ttk
 from tkinter import messagebox
-from gui import Startup_frame, Style
+from gui import Startup_frame, Game_frame, Style
 
 class Application(tk.Tk):
 
@@ -21,10 +21,13 @@ class Application(tk.Tk):
         '''
 
         # Config root settings
-        logging.info("Configuring root settings")
+        logging.info("\n--------------------------------------------------\n"
+                     "###### Application constructor begins ######\n"
+                     "--------------------------------------------------")
         super().__init__(*rootargs, **rootkwargs)
         self.title(application_name)
-        self.resizable(False, False)
+        self.protocol('WM_DELETE_WINDOW', self.quit_program) # Override 'x' close button to safely exit
+        # self.resizable(False, False)
         self.SCREEN_WIDTH = self.winfo_screenwidth()  # Display width
         self.SCREEN_HEIGHT = self.winfo_screenheight()  # Display height
         self.style = Style.Style()
@@ -32,11 +35,15 @@ class Application(tk.Tk):
         # Create frames
         logging.info("Creating frames for application")
         self.frame_objects = {} # Stores frames
-        self._create_frames(Startup_frame.Startup_frame)
+        self._create_frames(Startup_frame.Startup_frame, Game_frame.Game_frame)
         self.show_frame("Startup_frame")
+        # self.show_frame("Game_frame")
         self.centre_root()
 
-        logging.info("------Application Constructor Fin------")
+        logging.info("\n"
+                     "------------------------------------------------\n"
+                     "###### Application constructor finish ######\n"
+                     "------------------------------------------------")
 
     def set_root_min_size(self, width, height):
         ''' Set min size of root
@@ -80,12 +87,13 @@ class Application(tk.Tk):
         :param frame_name: Frame to show
         :return: None
         '''
-        logging.info("Displaying frame (%s)", frame_name)
         self.ungrid_all_widgets(self) # Forget all items on root
+        logging.info("Displaying frame (%s)", frame_name)
         frame_to_display = self.frame_objects.get(frame_name) # Get frame to display
         self.columnconfigure(index=0, weight=1)
         self.rowconfigure(index=0, weight=1)
         frame_to_display.grid(row=0, column=0, sticky=tk.NSEW)
+        frame_to_display.resize_root()
 
 
     def show_warning_frame(self, title, text):
@@ -109,6 +117,12 @@ class Application(tk.Tk):
         messagebox.showerror(title, text)
 
     def question_msg_frame(self, title, text):
+        ''' When called, shows msgbox question type
+
+        :param title: Title of msgbox
+        :param text: Text content of msgbox
+        :return:
+        '''
         logging.debug("Displaying msgbox, %s, %s", title, text)
         answer = messagebox.askyesnocancel(title, text)
         return answer
@@ -119,7 +133,7 @@ class Application(tk.Tk):
         :param window_to_ungrid: Frame/root object to ungrid
         :return: None
         '''
-        logging.info("Unpacking all widgets from %s", )#todo add name here
+        logging.info("Unpacking all widgets from %s", window_to_unpack.__class__)
         window_slaves = window_to_unpack.pack_slaves()
         for widget in window_slaves:
             widget.pack_forget()
@@ -130,10 +144,22 @@ class Application(tk.Tk):
         :param window_to_ungrid: Frame/root object to ungrid
         :return: None
         '''
-        logging.info("Ungridding all widgets from %s", )  # todo add name here
+        logging.info("Ungridding all widgets from %s", window_to_ungrid.__class__)
         window_slaves = window_to_ungrid.grid_slaves()
         for widget in window_slaves:
             widget.grid_forget()
+
+    def quit_program(self):
+        ''' Safely quit from program
+        :return: None
+        '''
+        logging.info("Program quit requested")
+        quit = self.question_msg_frame("Quit", "Are you sure you would like to quit?\n"
+                                               "Your current game will NOT save!")
+        if quit == True:
+            logging.info("Program quitting")
+            exit()
+        logging.info("Program terminated")
 
     def _create_frames(self, *frames_to_init):
         ''' Private method. Creates all frames listed in constructor and stores in self._frame_objects dict
@@ -146,4 +172,4 @@ class Application(tk.Tk):
             frame_name = frame.__name__
             frame_object = frame(parent=self, top_level=self, style=self.style)  # Create frame obj
             self.frame_objects[frame_name] = frame_object  # Store frame for future reference
-            logging.debug("Creating [%s] frame", frame_name)
+            logging.info("Creating [%s] frame", frame_name)

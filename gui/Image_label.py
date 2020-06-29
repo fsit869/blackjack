@@ -13,11 +13,12 @@ https://pypi.org/project/Pillow/
 import tkinter as tk
 import logging
 from PIL import Image, ImageTk
+from tkinter import messagebox
 from tkinter import ttk
 
-class Image_label(tk.Label):
-    def __init__(self, parent, file_location, width, height, background_colour=None, antialias=Image.ANTIALIAS):
-        super().__init__(parent, bg=background_colour)
+class Image_label(ttk.Label):
+    def __init__(self, parent, file_location, width, height, antialias=Image.ANTIALIAS):
+        super().__init__(parent)
         rendered_image = ""
 
         try: # Load image
@@ -31,6 +32,12 @@ class Image_label(tk.Label):
             load_image = Image.open("gui/images/no_image_avaliable.png")
             load_image = load_image.resize((width, height), antialias)
             rendered_image = ImageTk.PhotoImage(load_image)
+            self._display_error_message(file_location)
         self.configure(image=rendered_image)
         self.image = rendered_image
+
+    def _display_error_message(self, file_location):
+        messagebox.showerror("Error loading image", "Error in loading image \"{}\".\n"
+                                                    " This image has been replaced with an error img."
+                                                    "Note: The program will still continue to work ".format(file_location))
 
