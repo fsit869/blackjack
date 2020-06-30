@@ -11,7 +11,7 @@ import logging
 APPLICATION_NAME = "Blackjack"
 
 if __name__ == '__main__':
-
+    # Branch test
     # Init logger
     FORMAT = '[%(asctime)-s][%(levelname)5s] %(message)s'
     logging.basicConfig(filename="latest.log", filemode="w", level=logging.DEBUG,
