@@ -19,4 +19,5 @@ if __name__ == '__main__':
 
     logging.info("Execution begin")
     application = Application.Application(APPLICATION_NAME)
+    print("Hi")
     application.mainloop()

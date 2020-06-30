@@ -32,9 +32,12 @@ class Application(tk.Tk):
         self.SCREEN_HEIGHT = self.winfo_screenheight()  # Display height
         self.style = Style.Style()
 
+        # Public vars
+        self.frame_objects = {} # Stores frames
+        self.startup_frame_settings = {} # Store settings from startup frame
+
         # Create frames
         logging.info("Creating frames for application")
-        self.frame_objects = {} # Stores frames
         self._create_frames(Startup_frame.Startup_frame, Game_frame.Game_frame)
 
         self.show_frame("Startup_frame")

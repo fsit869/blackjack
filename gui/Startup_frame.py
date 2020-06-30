@@ -30,6 +30,7 @@ class Startup_frame(ttk.Frame):
         self.STARTUP_FRAME_WIDTH = int(self.top_level.SCREEN_WIDTH / 4)
         self.STARTUP_FRAME_HEIGHT = int(self.top_level.SCREEN_HEIGHT / 1.5)
 
+
         # Setup Frame
         super().__init__(parent)
 
@@ -49,7 +50,7 @@ class Startup_frame(ttk.Frame):
 
         # Input labels
         ttk.Label(input_frame, text="Bots: ").grid(row=0, column=0, sticky=tk.W)
-        ttk.Label(input_frame, text="Bot Delay:").grid(row=1, column=0, sticky=tk.W)
+        ttk.Label(input_frame, text="Disable Bot Delay:").grid(row=1, column=0, sticky=tk.W)
 
         # Input variables
         self.input_vars["amtOfBotsWidget"] = tk.IntVar()
@@ -73,27 +74,24 @@ class Startup_frame(ttk.Frame):
         ###########
         ttk.Button(self, text="Quit", style="quit.startUpFrame.TButton", command=self.on_quit_button).pack(fill=tk.X, padx=25, pady=(5, 40), side=tk.BOTTOM)
         ttk.Button(self, text="Copyright", command=self.goto_copyright_window, style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
-        ttk.Button(self, text="Help", command=self.is_all_widgets_filled_in, style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
-        ttk.Button(self, text="Play", style="play.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
+        ttk.Button(self, text="Help", style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
+        ttk.Button(self, text="Play", command=self.goto_next_frame, style="play.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
 
         logging.info("\n"
                      "------------------------------------------------\n"
                      "###### Startup Frame constructor finish ######\n"
                      "------------------------------------------------")
 
-    def is_all_widgets_filled_in(self):
-        items = []
-        logging.info("Checking is all widgets filled")
-        pass
-
-
     def get_inputs(self):
         ''' Get all inputs from input widgets
 
         :return: Dict {Widget name: Value}
         '''
-        # todo this
-        pass
+        input_vals = {}
+        for widget_name, var_obj in self.input_vars.items():
+            logging.info("Getting value from %s widget", widget_name)
+            input_vals[widget_name] = var_obj.get()
+        return input_vals
 
     def resize_min_root(self):
         ''' Resizes root to size optimal for this frame
@@ -105,6 +103,7 @@ class Startup_frame(ttk.Frame):
             self.STARTUP_FRAME_WIDTH,
             self.STARTUP_FRAME_HEIGHT
         )
+        self.top_level.state('normal')
 
     def on_quit_button(self):
         ''' Called when quit button pressed
@@ -136,7 +135,9 @@ class Startup_frame(ttk.Frame):
 
 
     def goto_next_frame(self):
-        pass
+        print(self.get_inputs())
+        self.top_level.startup_frame_settings = self.get_inputs()
+        self.top_level.show_frame("Game_frame")
 
     def _validate_numbers_only(self, action, value_if_allowed, text, trigger_type, text_before_change):
         '''Private function. Not Meant to be accessed by other functions
@@ -152,10 +153,14 @@ class Startup_frame(ttk.Frame):
         '''
         logging.debug("Spinbox validation run")
         if action == 0 or trigger_type == "forced":
-            return True
+            return False
         elif value_if_allowed == "":
-            return True
+            return False
         elif text in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
             if int(value_if_allowed) <= 3:
                 return True
+            elif int(value_if_allowed)>3 and text in ("1", "2", "3"):
+                self.input_vars["amtOfBotsWidget"].set(text)
+                return True
+
         return False

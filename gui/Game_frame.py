@@ -34,7 +34,7 @@ class Game_frame(ttk.Frame):
         # self.top_level.overrideredirect(True)
         # root = Tk()
         # self.top_level.attributes('-fullscreen', True)
-        # self.top_level.state('zoomed')
+
         logging.info("\n"
                      "------------------------------------------------\n"
                      "###### Game_frame constructor finish ######\n"
@@ -50,3 +50,4 @@ class Game_frame(ttk.Frame):
             int(self.top_level.SCREEN_WIDTH/2),
             int(self.top_level.SCREEN_HEIGHT/2),
         )
+        self.top_level.state('zoomed')
