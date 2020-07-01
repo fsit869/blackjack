@@ -7,13 +7,14 @@ before the game starts.
 
 import tkinter as tk
 import logging
-from gui import Image_label, Copyright_window
+from view import Image_label
+from view.frames.subframes import Copyright_window
 from tkinter import ttk as ttk
 
 class Startup_frame(ttk.Frame):
-    def __init__(self, parent, top_level, style):
+    def __init__(self, view, parent, top_level, style, callbacks):
         ''' Constructor to create Startup_frame
-
+        ;:param view: View layer
         :param parent: Parent
         :param top_level: Toplevel
         :param style: Style
@@ -24,19 +25,22 @@ class Startup_frame(ttk.Frame):
 
         # Public variables
         self.top_level = top_level
+        self.view = view
         self.style = style
+        self.callbacks = callbacks
         self.input_widgets = {} # {widget_name:widget object}
         self.input_vars = {}
-        self.STARTUP_FRAME_WIDTH = int(self.top_level.SCREEN_WIDTH / 4)
-        self.STARTUP_FRAME_HEIGHT = int(self.top_level.SCREEN_HEIGHT / 1.5)
+
+        self.STARTUP_FRAME_WIDTH = int(self.view.SCREEN_WIDTH / 4)
+        self.STARTUP_FRAME_HEIGHT = int(self.view.SCREEN_HEIGHT / 1.5)
 
 
         # Setup Frame
         super().__init__(parent)
 
         # Title
-        Image_label.Image_label(self, "gui/images/card_collections/aces.png", int(self.top_level.SCREEN_HEIGHT / 2.5),
-                                int(self.top_level.SCREEN_WIDTH / 8.5)).pack()
+        Image_label.Image_label(self, "resources/images/card_collections/aces.png", int(self.view.SCREEN_HEIGHT / 2.5),
+                                int(self.view.SCREEN_WIDTH / 8.5)).pack()
         ttk.Label(self, text="Blackjack", style="title.default.TLabel").pack()
 
         ##########
@@ -72,10 +76,10 @@ class Startup_frame(ttk.Frame):
         ###########
         # Buttons #
         ###########
-        ttk.Button(self, text="Quit", style="quit.startUpFrame.TButton", command=self.on_quit_button).pack(fill=tk.X, padx=25, pady=(5, 40), side=tk.BOTTOM)
-        ttk.Button(self, text="Copyright", command=self.goto_copyright_window, style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
+        ttk.Button(self, text="Quit", command=self.callbacks["startupFrame.quit"], style="quit.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=(5, 40), side=tk.BOTTOM)
+        ttk.Button(self, text="Copyright", command=self._on_copyright_button, style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
         ttk.Button(self, text="Help", style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
-        ttk.Button(self, text="Play", command=self.goto_next_frame, style="play.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
+        ttk.Button(self, text="Play", command=self.callbacks["startupFrame.play"], style="play.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
 
         logging.info("\n"
                      "------------------------------------------------\n"
@@ -93,51 +97,23 @@ class Startup_frame(ttk.Frame):
             input_vals[widget_name] = var_obj.get()
         return input_vals
 
-    def resize_min_root(self):
+    def _on_help_button(self):
+        pass
+
+    def _on_copyright_button(self):
+        copyright_window = Copyright_window.Copyright_window()
+
+    def _resize_min_root(self):
         ''' Resizes root to size optimal for this frame
 
         :return: None
         '''
         logging.info("Resizing root for Startup_frame")
-        self.top_level.set_root_min_size(
+        self.view.set_root_min_size(
             self.STARTUP_FRAME_WIDTH,
             self.STARTUP_FRAME_HEIGHT
         )
         self.top_level.state('normal')
-
-    def on_quit_button(self):
-        ''' Called when quit button pressed
-
-        :return:
-        '''
-        logging.info("Quit button pressed on Startup Frame")
-        self.top_level.quit_program()
-
-    def on_help_button(self):
-        ''' Called when help button pressed
-
-        :return:
-        '''
-        pass
-
-    def on_play_button(self):
-        ''' Called when play button pressed
-
-        :return:
-        '''
-        pass
-
-    def goto_help_window(self):
-        pass
-
-    def goto_copyright_window(self):
-        copyright_window = Copyright_window.Copyright_window()
-
-
-    def goto_next_frame(self):
-        print(self.get_inputs())
-        self.top_level.startup_frame_settings = self.get_inputs()
-        self.top_level.show_frame("Game_frame")
 
     def _validate_numbers_only(self, action, value_if_allowed, text, trigger_type, text_before_change):
         '''Private function. Not Meant to be accessed by other functions

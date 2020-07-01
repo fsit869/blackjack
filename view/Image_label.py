@@ -29,7 +29,7 @@ class Image_label(ttk.Label):
 
         except Exception as e: # If unable to load image
             logging.error("Failed to load image [%s], Replacing with failed to load img", file_location)
-            load_image = Image.open("gui/images/no_image_avaliable.png")
+            load_image = Image.open("resources/images/no_image_avaliable.png")
             load_image = load_image.resize((width, height), antialias)
             rendered_image = ImageTk.PhotoImage(load_image)
             self._display_error_message(file_location)

@@ -1,4 +1,4 @@
-''' Application.py
+''' View.py
 
 This file contains the root and entire GUI. This file is the controller of the program.
 
@@ -6,13 +6,14 @@ This file contains the root and entire GUI. This file is the controller of the p
 
 import tkinter as tk
 import logging
-from tkinter import ttk
 from tkinter import messagebox
-from gui import Startup_frame, Game_frame, Style
+from view import Style
+from view.frames import Startup_frame, Game_frame
 
-class Application(tk.Tk):
 
-    def __init__(self, application_name, *rootargs, **rootkwargs, ):
+class View():
+
+    def __init__(self, root, application_name, callbacks):
         ''' Constructor. Setup root and frames
 
         :param application_name: Root name
@@ -20,21 +21,24 @@ class Application(tk.Tk):
         :param rootkwargs: Root keywords
         '''
 
+        # Public vars
+        self.root = root
+        self.frame_objects = {}  # Stores frames
+        self.current_frame = None
+        self.startup_frame_settings = {}  # Store settings from startup frame
+        self.style = Style.Style()
+        self.callbacks = callbacks
+        # todo frame objects {name:frame class} for initlisating
+
         # Config root settings
         logging.info("\n--------------------------------------------------\n"
                      "###### Application constructor begins ######\n"
                      "--------------------------------------------------")
-        super().__init__(*rootargs, **rootkwargs)
-        self.title(application_name)
-        self.protocol('WM_DELETE_WINDOW', self.quit_program) # Override 'x' close button to safely exit
-        # self.resizable(False, False)
-        self.SCREEN_WIDTH = self.winfo_screenwidth()  # Display width
-        self.SCREEN_HEIGHT = self.winfo_screenheight()  # Display height
-        self.style = Style.Style()
-
-        # Public vars
-        self.frame_objects = {} # Stores frames
-        self.startup_frame_settings = {} # Store settings from startup frame
+        self.root.title(application_name)
+        # self.root.protocol('WM_DELETE_WINDOW', self.quit_program) # Override 'x' close button to safely exit # todo something about this
+        # self.root.resizable(False, False)
+        self.SCREEN_WIDTH = self.root.winfo_screenwidth()  # Display width
+        self.SCREEN_HEIGHT = self.root.winfo_screenheight()  # Display height
 
         # Create frames
         logging.info("Creating frames for application")
@@ -42,7 +46,7 @@ class Application(tk.Tk):
 
         self.show_frame("Startup_frame")
         # self.show_frame("Game_frame")
-        self.centre_root()
+        self._centre_root()
 
         logging.info("\n"
                      "------------------------------------------------\n"
@@ -57,33 +61,15 @@ class Application(tk.Tk):
         :return: None
         '''
         logging.info("Setting root min size to %d %d", width, height)
-        self.minsize(width, height)
+        self.root.minsize(width, height)
 
-    def centre_root(self):
-        ''' Centre root to screen no matter the size.
+    def set_game_phase(self, phase):
+        ''' Set the game phase from view layer
 
+        :param GAMEPHASE: String
         :return: None
         '''
-        self.update_idletasks()
-
-        _ROOT_HEIGHT = self.winfo_height() # Root height
-        _ROOT_WIDTH = self.winfo_width() # Root width
-        _FRM_WIDTH = self.winfo_rootx() - self.winfo_x() # Find size of outer frame
-        _WIN_WIDTH = self.winfo_width() + (2 * _FRM_WIDTH) # True window width
-        _TITLE_BAR_HEIGHT = self.winfo_rooty() - self.winfo_y() # Title bar height
-        _WIN_HEIGHT = self.winfo_height() + (_TITLE_BAR_HEIGHT + _FRM_WIDTH) # True window height
-
-        x = self.winfo_screenwidth() // 2 - _WIN_WIDTH // 2 # Coord placement
-        y = self.winfo_screenheight() // 2 - _WIN_HEIGHT // 2 # Coord placement
-
-        logging.info("Setting root window size (%d, %d) to (%d, %d)", _ROOT_WIDTH, _ROOT_HEIGHT, x, y)
-        self.geometry("{}x{}+{}+{}".format(
-            _ROOT_WIDTH,
-            _ROOT_HEIGHT,
-            x,
-            y,
-        ))
-
+        self.root.set_game_phase(phase)
 
     def show_frame(self, frame_name):
         ''' Show the specified frame
@@ -91,14 +77,18 @@ class Application(tk.Tk):
         :param frame_name: Frame to show
         :return: None
         '''
-        self.ungrid_all_widgets(self) # Forget all items on root
+        self.ungrid_all_widgets(self.root) # Forget all items on root
         logging.info("Displaying frame (%s)", frame_name)
         frame_to_display = self.frame_objects.get(frame_name) # Get frame to display
-        self.columnconfigure(index=0, weight=1)
-        self.rowconfigure(index=0, weight=1)
-        frame_to_display.grid(row=0, column=0, sticky=tk.NSEW)
-        frame_to_display.resize_min_root()
+        if frame_to_display == None:
+            raise FileNotFoundError("Failed to load frame [{}]".format(frame_to_display))
+            # todo better exception
 
+        self.root.columnconfigure(index=0, weight=1)
+        self.root.rowconfigure(index=0, weight=1)
+        self.current_frame = frame_to_display
+        frame_to_display.grid(row=0, column=0, sticky=tk.NSEW)
+        frame_to_display._resize_min_root()
 
     def show_warning_frame(self, title, text):
         '''When called, Shows a msgbox warning type
@@ -153,18 +143,6 @@ class Application(tk.Tk):
         for widget in window_slaves:
             widget.grid_forget()
 
-    def quit_program(self):
-        ''' Safely quit from program
-        :return: None
-        '''
-        logging.info("Program quit requested")
-        quit = self.question_msg_frame("Quit", "Are you sure you would like to quit?\n"
-                                               "Your current game will NOT save!")
-        if quit == True:
-            logging.info("Program quitting")
-            exit()
-        logging.info("Program terminated")
-
     def _create_frames(self, *frames_to_init):
         ''' Private method. Creates all frames listed in constructor and stores in self._frame_objects dict
         The name will be same as class name.
@@ -174,6 +152,31 @@ class Application(tk.Tk):
         '''
         for frame in frames_to_init:
             frame_name = frame.__name__
-            frame_object = frame(parent=self, top_level=self, style=self.style)  # Create frame obj
+            frame_object = frame(view=self, parent=self.root, top_level=self.root, style=self.style, callbacks=self.callbacks)  # Create frame obj
             self.frame_objects[frame_name] = frame_object  # Store frame for future reference
             logging.info("Creating [%s] frame", frame_name)
+
+    def _centre_root(self):
+        ''' Centre root to screen no matter the size.
+
+        :return: None
+        '''
+        self.root.update_idletasks()
+
+        _ROOT_HEIGHT = self.root.winfo_height() # Root height
+        _ROOT_WIDTH = self.root.winfo_width() # Root width
+        _FRM_WIDTH = self.root.winfo_rootx() - self.root.winfo_x() # Find size of outer frame
+        _WIN_WIDTH = self.root.winfo_width() + (2 * _FRM_WIDTH) # True window width
+        _TITLE_BAR_HEIGHT = self.root.winfo_rooty() - self.root.winfo_y() # Title bar height
+        _WIN_HEIGHT = self.root.winfo_height() + (_TITLE_BAR_HEIGHT + _FRM_WIDTH) # True window height
+
+        x = self.root.winfo_screenwidth() // 2 - _WIN_WIDTH // 2 # Coord placement
+        y = self.root.winfo_screenheight() // 2 - _WIN_HEIGHT // 2 # Coord placement
+
+        logging.info("Setting root window size (%d, %d) to (%d, %d)", _ROOT_WIDTH, _ROOT_HEIGHT, x, y)
+        self.root.geometry("{}x{}+{}+{}".format(
+            _ROOT_WIDTH,
+            _ROOT_HEIGHT,
+            x,
+            y,
+        ))

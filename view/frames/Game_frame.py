@@ -5,13 +5,11 @@ before the game starts.
 
 '''
 
-import tkinter as tk
 import logging
-from gui import Image_label
 from tkinter import ttk as ttk
 
 class Game_frame(ttk.Frame):
-    def __init__(self, parent, top_level, style):
+    def __init__(self, view, parent, top_level, style, callbacks):
         ''' Constructor to create Startup_frame
 
         :param parent: Parent
@@ -23,14 +21,17 @@ class Game_frame(ttk.Frame):
                      "--------------------------------------------------")
         # Public variables
         self.top_level = top_level
+        self.view = view
         self.style = style
+        self.callbacks = callbacks
         self.input_vars = {}
         self.input_widgets = {}
 
         # Frame settings
 
         super().__init__(parent)
-        self.resize_min_root()
+        self._resize_min_root()
+
         # self.top_level.overrideredirect(True)
         # root = Tk()
         # self.top_level.attributes('-fullscreen', True)
@@ -40,14 +41,14 @@ class Game_frame(ttk.Frame):
                      "###### Game_frame constructor finish ######\n"
                      "------------------------------------------------")
 
-    def resize_min_root(self):
+    def _resize_min_root(self):
         ''' Resizes root to size optimal for this frame
 
                 :return:
                 '''
         logging.info("Resizing root for Game_frame")
-        self.top_level.set_root_min_size(
-            int(self.top_level.SCREEN_WIDTH/2),
-            int(self.top_level.SCREEN_HEIGHT/2),
+        self.view.set_root_min_size(
+            int(self.view.SCREEN_WIDTH/2),
+            int(self.view.SCREEN_HEIGHT/2),
         )
         self.top_level.state('zoomed')
