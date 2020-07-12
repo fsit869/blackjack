@@ -36,7 +36,7 @@ class Image_label(ttk.Label):
 
         self._load_image()
         if (width != None) and (height != None):
-            self.resize_image(100, 100)
+            self.resize_image(width, height)
         self._update_image()
 
     def get_image_name(self):
@@ -80,7 +80,7 @@ class Image_label(ttk.Label):
         :return: None
         '''
         try:  # Load image
-            logging.info("Trying to load image [%s] width, height (%d, %d)", self.file_location)
+            logging.info("Trying to load image [%s", self.file_location)
             self.load_image = Image.open(self.file_location)
 
         except Exception as e:  # If unable to load image
