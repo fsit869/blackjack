@@ -9,21 +9,22 @@ import tkinter as tk
 import logging
 from tkinter import ttk
 from view import Image_label
+from resources import PLAYERCONSTANTS
 
 class PlayerFrame(tk.Canvas):
-    def __init__(self, parent, player_name, player_colour, is_player_alive, is_current_turn=False):
+    def __init__(self, parent, player_name, player_colour, player_status, is_current_turn=False):
         ''' Creates a player frame
 
         :param parent: Parent to be attached too
         :param player_name: Name of player. Also will be name of widget
         :param player_colour: Colour of player
-        :param is_player_alive: Bool, True=Alive, False=Dead
+        :param player_status: int. Reference to PLAYERCONSTANTS.py
         :param is_current_turn: Bol, True=Current turn, False=Not player turn
         '''
         logging.info("Creating PlayerFRAME: {%s}", player_name)
         super().__init__(parent, name=player_name)
         self.player_colour = player_colour
-        self.is_player_alive = is_player_alive
+        self.player_status = player_status
         self.is_current_turn = False
 
         self.widgets = {}
@@ -36,7 +37,8 @@ class PlayerFrame(tk.Canvas):
         self.widgets["is_player_alive"].grid(row=1, column=0, padx=10, pady=10)
 
         # Disable if dead
-        if is_player_alive: self._on_dead_entity()
+        if player_status == PLAYERCONSTANTS.BUST: self._on_dead_entity()
+        if player_status == PLAYERCONSTANTS.STOOD: self._on_stood_entity()
 
         # If current player turn
         if is_current_turn: self._on_current_turn()
@@ -49,10 +51,23 @@ class PlayerFrame(tk.Canvas):
         self.widgets["is_player_alive"].configure(style="currentTurn.playerFrame.TLabel")
         self.widgets["player_name"].configure(style="currentTurn.playerFrame.TLabel")
 
+    def _on_stood_entity(self):
+        ''' Restyles to if player is stood
+
+        :return:
+        '''
+        self._disable_widgets()
+        self.widgets["is_player_alive"].configure(text="STOOD")
+
+
     def _on_dead_entity(self):
         ''' Restyles to if player is dead
         :return: None
         '''
+        self._disable_widgets()
+        self.widgets["is_player_alive"].configure(text="BUST")
+
+    def _disable_widgets(self):
+        # todo need to ignore card symbol & amt
         for widget_name, widget_object in self.widgets.items():
             widget_object.configure(state=tk.DISABLED)
-        self.widgets["is_player_alive"].configure(text="BUST")

@@ -83,19 +83,19 @@ class View():
         frame_to_display._resize_min_root()
         self._centre_root()
 
-    def update_game_frame(self, players, cards, enable_buttons):
+    def update_game_frame(self, players, cards, disable_buttons):
         ''' Update contents from game frame
 
         :param players: dict Players to update
         :param cards: List Cards to update
-        :param enable_buttons: Bool.
+        :param disable_buttons: Bool.
         :return: None
         '''
         if type(self.current_frame) != Game_frame.Game_frame:
             raise Exception("Incorrect frame chosen")
         self.current_frame.update_player_display(players)
         self.current_frame.update_card_display(cards)
-        self.current_frame.disable_player_buttons(enable_buttons)
+        self.current_frame.disable_player_buttons(disable_buttons)
 
     def show_warning_frame(self, title, text):
         '''When called, Shows a msgbox warning type

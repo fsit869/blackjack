@@ -8,7 +8,7 @@ import tkinter as tk
 import logging
 from view import View
 from model import GameModel
-from resources import CARDCONSTANTS
+from resources import CARDCONSTANTS, PLAYERCONSTANTS
 
 class GAMEPHASE:
     ''' Constants in the phase of the game. This class cannot be initiated. Else
@@ -47,7 +47,6 @@ class Controller(tk.Tk):
         self.set_game_phase("startup")
         self.view.show_frame("Startup_frame")
         # self.view.show_frame("Game_frame")
-
 
     def set_game_phase(self, phase):
         ''' Set the game phase
@@ -106,7 +105,12 @@ class Controller(tk.Tk):
         # print(input_vals)
         self.set_game_phase("gameframe")
         self.view.show_frame("Game_frame")
-        self.view.update_game_frame({"current_turn": "player1", "player1": False, "player2": False, "player3": True},
+        self.view.update_game_frame({"current_turn": "player3",
+                                     "player1": PLAYERCONSTANTS.STOOD,
+                                     "player2": PLAYERCONSTANTS.BUST,
+                                     "player3": PLAYERCONSTANTS.ALIVE,
+                                     "player4": PLAYERCONSTANTS.ALIVE,
+                                     "player5":PLAYERCONSTANTS.ALIVE},
                                     None, False)
 
     def game_Loop(self):

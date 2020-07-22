@@ -49,5 +49,5 @@ class Style(ttk.Style):
         self.configure("currentTurn.playerFrame.TLabel", background="#d9e324", font="Times 10 bold")
         self.configure("alive.playerFrame.TLabel", background="grey", font="Times 10 bold")
         self.map("alive.playerFrame.TLabel",
-                 background=[('disabled', 'grey')],
+                 background=[('disabled', 'grey')], # todo possibly hange to better grey colour. so can still see
                  )
