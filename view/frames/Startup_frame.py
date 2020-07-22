@@ -34,12 +34,11 @@ class Startup_frame(ttk.Frame):
         self.STARTUP_FRAME_WIDTH = int(self.view.SCREEN_WIDTH / 4)
         self.STARTUP_FRAME_HEIGHT = int(self.view.SCREEN_HEIGHT / 1.5)
 
-
         # Setup Frame
         super().__init__(parent)
 
         # Title
-        Image_label.Image_label(self, "resources/images/card_collections/aces.png", int(self.view.SCREEN_HEIGHT / 2.5),
+        Image_label.Image_label(self, "title_image", "resources/images/card_collections/aces.png", int(self.view.SCREEN_HEIGHT / 2.5),
                                 int(self.view.SCREEN_WIDTH / 8.5)).pack()
         ttk.Label(self, text="Blackjack", style="title.default.TLabel").pack()
 
