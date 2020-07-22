@@ -24,6 +24,9 @@ class Copyright_window(tk.Toplevel):
         self.centre_root()
         self.protocol('WM_DELETE_WINDOW', self.on_ok_button)
 
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+
         # Details
         ttk.Label(self,wraplength=390, text="""
 The Python Imaging Library (PIL) is
