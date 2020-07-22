@@ -20,33 +20,33 @@ class View():
         :param rootargs: Root arguements
         :param rootkwargs: Root keywords
         '''
+        # Frames to inilized for program {referenceName : frameClass}
+        self.frames_to_init = {
+            "Startup_frame": Startup_frame.Startup_frame,
+            "Game_frame": Game_frame.Game_frame,
+        }
+
 
         # Public vars
         self.root = root
-        self.frame_objects = {}  # Stores frames
         self.current_frame = None
-        self.startup_frame_settings = {}  # Store settings from startup frame
+        self.frame_objects = {}  # Stores initlized frames
         self.style = Style.Style()
         self.callbacks = callbacks
-        # todo frame objects {name:frame class} for initlisating
 
         # Config root settings
         logging.info("\n--------------------------------------------------\n"
                      "###### Application constructor begins ######\n"
                      "--------------------------------------------------")
         self.root.title(application_name)
-        # self.root.protocol('WM_DELETE_WINDOW', self.quit_program) # Override 'x' close button to safely exit # todo something about this
+        self.root.protocol('WM_DELETE_WINDOW', callbacks.get("quit"))
         # self.root.resizable(False, False)
         self.SCREEN_WIDTH = self.root.winfo_screenwidth()  # Display width
         self.SCREEN_HEIGHT = self.root.winfo_screenheight()  # Display height
 
         # Create frames
         logging.info("Creating frames for application")
-        self._create_frames(Startup_frame.Startup_frame, Game_frame.Game_frame)
-
-        self.show_frame("Startup_frame")
-        # self.show_frame("Game_frame")
-        self._centre_root()
+        self._create_frames(self.frames_to_init)
 
         logging.info("\n"
                      "------------------------------------------------\n"
@@ -63,14 +63,6 @@ class View():
         logging.info("Setting root min size to %d %d", width, height)
         self.root.minsize(width, height)
 
-    def set_game_phase(self, phase):
-        ''' Set the game phase from view layer
-
-        :param GAMEPHASE: String
-        :return: None
-        '''
-        self.root.set_game_phase(phase)
-
     def show_frame(self, frame_name):
         ''' Show the specified frame
 
@@ -82,13 +74,14 @@ class View():
         frame_to_display = self.frame_objects.get(frame_name) # Get frame to display
         if frame_to_display == None:
             raise FileNotFoundError("Failed to load frame [{}]".format(frame_to_display))
-            # todo better exception
+            # todo better exception, maybe exit code 1.
 
         self.root.columnconfigure(index=0, weight=1)
         self.root.rowconfigure(index=0, weight=1)
         self.current_frame = frame_to_display
         frame_to_display.grid(row=0, column=0, sticky=tk.NSEW)
         frame_to_display._resize_min_root()
+        self._centre_root()
 
     def show_warning_frame(self, title, text):
         '''When called, Shows a msgbox warning type
@@ -143,18 +136,49 @@ class View():
         for widget in window_slaves:
             widget.grid_forget()
 
-    def _create_frames(self, *frames_to_init):
+    def destory_children(self, parent_frame):
+        ''' Destroy all children from a frame
+
+        :param parent_frame: Frame to destroy children
+        :return:
+        '''
+        for child in parent_frame.winfo_children():
+            child.destroy()
+
+    def _create_frames(self, frames_to_init):
         ''' Private method. Creates all frames listed in constructor and stores in self._frame_objects dict
         The name will be same as class name.
 
         :param frames_to_init: List class to create
         :return: None
         '''
-        for frame in frames_to_init:
-            frame_name = frame.__name__
-            frame_object = frame(view=self, parent=self.root, top_level=self.root, style=self.style, callbacks=self.callbacks)  # Create frame obj
+        for frame_name, frame_class in frames_to_init.items():
+            frame_object = frame_class(
+                view=self, parent=self.root, top_level=self.root,
+                style=self.style, callbacks=self.callbacks
+            )  # Create frame obj
             self.frame_objects[frame_name] = frame_object  # Store frame for future reference
             logging.info("Creating [%s] frame", frame_name)
+
+    def get_root_width(self):
+        ''' Get root width
+
+        :return: int
+        '''
+        # Force update frame
+        self.root.update_idletasks()
+        self.root.update()
+        return self.root.winfo_width() # Root width
+
+    def get_root_height(self):
+        ''' Get root height
+
+        :return: int
+        '''
+        # Force update frame
+        self.root.update_idletasks()
+        self.root.update()
+        return self.root.winfo_height()  # Root height
 
     def _centre_root(self):
         ''' Centre root to screen no matter the size.
@@ -162,9 +186,10 @@ class View():
         :return: None
         '''
         self.root.update_idletasks()
+        self.root.update()
 
-        _ROOT_HEIGHT = self.root.winfo_height() # Root height
-        _ROOT_WIDTH = self.root.winfo_width() # Root width
+        _ROOT_HEIGHT = self.get_root_height()
+        _ROOT_WIDTH = self.get_root_width()
         _FRM_WIDTH = self.root.winfo_rootx() - self.root.winfo_x() # Find size of outer frame
         _WIN_WIDTH = self.root.winfo_width() + (2 * _FRM_WIDTH) # True window width
         _TITLE_BAR_HEIGHT = self.root.winfo_rooty() - self.root.winfo_y() # Title bar height

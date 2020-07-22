@@ -31,3 +31,23 @@ class Style(ttk.Style):
         self.configure("play.startUpFrame.TButton", )
         self.configure("help.startUpFrame.TButton", )
         self.configure("quit.startUpFrame.TButton", )
+
+        ##############
+        # Game Frame #
+        ##############
+        self.configure("playerBoard.gameFrame.TFrame", background="brown")
+        self.configure("cardDisplay.gameFrame.TFrame", background="darkgreen")
+        self.configure("decision.gameFrame.TFrame", background="#82411b")
+
+        self.configure("cardBackground.gameFrame.TLabel", background="darkgreen")
+        self.configure("statusBar.gameFrame.TLabel", background="#82411b")
+
+        self.configure("hitButton.gameFrame.TButton", background="brown",font="Arial 40 bold")
+        self.configure("standButton.gameFrame.TButton", background="brown",font="Arial 40 bold")
+
+        # Player Frame
+        self.configure("currentTurn.playerFrame.TLabel", background="#d9e324", font="Times 10 bold")
+        self.configure("alive.playerFrame.TLabel", background="grey", font="Times 10 bold")
+        self.map("alive.playerFrame.TLabel",
+                 background=[('disabled', 'grey')],
+                 )
