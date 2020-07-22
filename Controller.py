@@ -83,10 +83,10 @@ class Controller(tk.Tk):
 
     def on_stand(self):
         # todo
+        print("Stand")
         pass
 
     def on_hit(self):
-        # todo
         pass
 
     def goto_Startup_Frame(self):
@@ -103,8 +103,11 @@ class Controller(tk.Tk):
         :return:
         '''
         input_vals = self.view.current_frame.get_inputs()
+        # print(input_vals)
         self.set_game_phase("gameframe")
         self.view.show_frame("Game_frame")
+        self.view.update_game_frame({"current_turn": "player1", "player1": False, "player2": False, "player3": True},
+                                    None, False)
 
     def game_Loop(self):
         ''' Game loop

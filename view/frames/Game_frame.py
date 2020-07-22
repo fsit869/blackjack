@@ -31,6 +31,9 @@ class Game_frame(ttk.Frame):
         self.input_vars = {}
         self.input_widgets = {}
 
+        self._playersdict = None # Current players displayed.
+        self._cards = None # Current cards displayed
+
         self._alarm_handler_obj = None # Reference for Config _on_resize
 
         # Frame settings
@@ -58,8 +61,8 @@ class Game_frame(ttk.Frame):
         self.bot_frame.grid(row=2, column=0, sticky=tk.NSEW)
 
         self.text_info = ttk.Label(self.bot_frame, anchor=tk.CENTER, style="statusBar.gameFrame.TLabel")
-        self.hit_button = ttk.Button(self.bot_frame, text="Hit", style="hitButton.gameFrame.TButton")
-        self.stand_button = ttk.Button(self.bot_frame, text="Stand", style="standButton.gameFrame.TButton")
+        self.hit_button = ttk.Button(self.bot_frame, text="Hit", style="hitButton.gameFrame.TButton", command=callbacks.get("gameFrame.hit"))
+        self.stand_button = ttk.Button(self.bot_frame, text="Stand", style="standButton.gameFrame.TButton", command=callbacks.get("gameFrame.stand"))
 
         self.text_info.grid(row=0, columnspan=2, sticky=tk.NSEW, padx=10)
         self.hit_button.grid(row=1, column=0, sticky=tk.NSEW, padx=10, pady=10)
@@ -71,58 +74,61 @@ class Game_frame(ttk.Frame):
         # self.disable_player_buttons(True)
         logging.debug("Game_frame constructor ends")
 
-    def update_player_display(self):
+    def update_player_display(self, playersdict):
         ''' Updates the player board
 
         :return:
         '''
-        logging.info("Updating player board")
+        self._playersdict = playersdict.copy() # Players_dict never none thus copy used
+        if playersdict != None:
+            logging.info("Updating player board")
 
-        self.view.destory_children(self.top_frame)
-        playersdict = self.callbacks.get("game.getPlayers")()  # {str(current_player):player, str(player):bool(status)}
-        current_turn = playersdict.pop("current_turn")
+            self.view.destory_children(self.top_frame)
+            # playersdict = self.callbacks.get("game.getPlayers")()  # {str(current_player):player, str(player):bool(status)}
+            current_turn = playersdict.pop("current_turn")
 
-        for player in playersdict:
-            player_frame = None
-            if current_turn == player:
-                player_frame = PlayerFrame.PlayerFrame(self.top_frame, player, "blue", playersdict.get(player), True)
-            else:
-                player_frame = PlayerFrame.PlayerFrame(self.top_frame, player, "blue", playersdict.get(player), False)
-            player_frame.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
+            for player in playersdict:
+                player_frame = None
+                if current_turn == player:
+                    player_frame = PlayerFrame.PlayerFrame(self.top_frame, player, "blue", playersdict.get(player), True)
+                else:
+                    player_frame = PlayerFrame.PlayerFrame(self.top_frame, player, "blue", playersdict.get(player), False)
+                player_frame.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
 
-    def update_card_display(self, *cards):
+    def update_card_display(self, cards):
         ''' Update players card display
 
         :param cards: List/Tuple, Cards to display. (Use CARDCONSTANTS class)
         :return: None
         '''
+        self._cards = cards # Card could be None type
+        if cards != None:
+            # Get size of cards
+            card_width = (self.view.get_root_width() / len(cards)) - 10 # -20 To allow space in side
+            max_height = int(self.view.get_root_height() / 2.5) # Max pixel height of cards. (Prevents oversize)
+            self.view.destory_children(self.mid_frame)
+            # Find ratio of card to fit into frame
+            while(True):
+                # Original card sizes
+                original_width = CARDCONSTANTS.CARD_PIXEL_WIDTH
+                original_height = CARDCONSTANTS.CARD_PIXEL_HEIGHT
 
-        # Get size of cards
-        card_width = (self.view.get_root_width() / len(cards)) - 10 # -20 To allow space in side
-        max_height = int(self.view.get_root_height() / 2.5) # Max pixel height of cards. (Prevents oversize)
-        self.view.destory_children(self.mid_frame)
-        # Find ratio of card to fit into frame
-        while(True):
-            # Original card sizes
-            original_width = CARDCONSTANTS.CARD_PIXEL_WIDTH
-            original_height = CARDCONSTANTS.CARD_PIXEL_HEIGHT
+                # Find percentage change of width, get according ratio height
+                width_percentage_change = (card_width/original_width)
+                new_height = int(original_height*width_percentage_change)
 
-            # Find percentage change of width, get according ratio height
-            width_percentage_change = (card_width/original_width)
-            new_height = int(original_height*width_percentage_change)
+                # Check if height in boundaries, else reduce width and retry
+                if new_height > max_height:
+                    card_width -= 10
+                else:
+                    break
 
-            # Check if height in boundaries, else reduce width and retry
-            if new_height > max_height:
-                card_width -= 10
-            else:
-                break
-
-        # Pack cards
-        for card in cards:
-            logging.debug("Added card img %s", card)
-            img = Image_label.Image_label(self.mid_frame, card, card, style="cardBackground.gameFrame.TLabel")
-            img.resize_image_width_pixel_ratio(card_width)
-            img.pack(side=tk.LEFT)
+            # Pack cards
+            for card in cards:
+                logging.debug("Added card img %s", card)
+                img = Image_label.Image_label(self.mid_frame, card, card, style="cardBackground.gameFrame.TLabel")
+                img.resize_image_width_pixel_ratio(card_width)
+                img.pack(side=tk.LEFT)
 
     def disable_player_buttons(self, bool):
         ''' Deactivate player buttons
@@ -165,8 +171,8 @@ class Game_frame(ttk.Frame):
 
         :return: None
         '''
-        self.update_card_display(CARDCONSTANTS.TWO_H, CARDCONSTANTS.JACK_C, CARDCONSTANTS.THREE_H)
-        self.update_player_display()
+        self.update_card_display(self._cards)
+        self.update_player_display(self._playersdict)
 
     def _resize_min_root(self):
         ''' Resize frame and apply min size
