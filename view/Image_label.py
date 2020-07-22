@@ -17,7 +17,7 @@ from tkinter import ttk
 
 
 class Image_label(ttk.Label):
-    def __init__(self, parent, image_name, file_location, width=None, height=None, antialias=Image.ANTIALIAS):
+    def __init__(self, parent, image_name, file_location, width=None, height=None, style=None, antialias=Image.ANTIALIAS):
         ''' Constructor
 
         :param parent: Parent of where image label will be placed
@@ -27,12 +27,16 @@ class Image_label(ttk.Label):
         :param height: Custom height (Ignore for default size)
         :param antialias: Custom antialias (Ignore for default Image.Antialias)
         '''
-        super().__init__(parent)
+        super().__init__(parent) # name=image_name may potentially cause crashes check.
+        self.configure(style=style)
         self.parent = parent
         self.image_name = image_name
         self.file_location = file_location
         self.load_image = ""
         self.rendered_image = ""
+
+        self.RAW_WIDTH = None
+        self.RAW_HEIGHT = None
 
         self._load_image()
         if (width != None) and (height != None):
@@ -59,20 +63,29 @@ class Image_label(ttk.Label):
         self.load_image = self.load_image.resize((width, height), antialias)
         self._update_image()
 
-    def resize_image_relative(self, width_percentage, height_percentage):
-        ''' Resize image relative to a parent frame
+    def resize_image_height_pixel_ratio(self, height_pixels, antialias=Image.ANTIALIAS):
+        ''' Resize to specified height. The width will be automatically resized according to img ratio
 
-        :param width_percentage:
-        :param height_percentage:
-        :param parent:
+        :param height_pixels: Int
+        :param antialias: Type of antialias
         :return: None
         '''
-        self.parent.update()  # Update parent to get accurate data
-        width = self.parent.winfo_width()
-        height = self.parent.winfo_height()
-        new_width = int(width * width_percentage)
-        new_height = int(height * height_percentage)
-        self.resize_image(new_width, new_height)
+        percentage_change = (height_pixels / self.RAW_HEIGHT)
+        NEW_WIDTH = int(self.RAW_WIDTH * percentage_change)
+        NEW_HEIGHT = int(self.RAW_HEIGHT * percentage_change)
+        self.resize_image(NEW_WIDTH, NEW_HEIGHT, antialias)
+
+    def resize_image_width_pixel_ratio(self, width_pixels, antialias=Image.ANTIALIAS):
+        ''' Resize to specified height. The height will be automatically resized according to img ratio
+
+        :param width_pixels: Int
+        :param antialias: Type of antialias
+        :return: None
+        '''
+        percentage_change = (width_pixels / self.RAW_WIDTH)
+        NEW_WIDTH = int(self.RAW_WIDTH * percentage_change)
+        NEW_HEIGHT = int(self.RAW_HEIGHT * percentage_change)
+        self.resize_image(NEW_WIDTH, NEW_HEIGHT, antialias)
 
     def _load_image(self):
         ''' Private method. Loads the image
@@ -80,8 +93,10 @@ class Image_label(ttk.Label):
         :return: None
         '''
         try:  # Load image
-            logging.info("Trying to load image [%s", self.file_location)
+            logging.info("Trying to load image [%s]", self.file_location)
             self.load_image = Image.open(self.file_location)
+            self.RAW_WIDTH = self.load_image.width
+            self.RAW_HEIGHT = self.load_image.height
 
         except Exception as e:  # If unable to load image
             logging.critical("Failed to load image [%s], Replacing with failed to load img", self.file_location)
