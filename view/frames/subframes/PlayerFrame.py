@@ -12,7 +12,7 @@ from view import Image_label
 from resources import PLAYERCONSTANTS
 
 class PlayerFrame(tk.Canvas):
-    def __init__(self, parent, player_name, player_colour, player_status, is_current_turn=False):
+    def __init__(self, parent, player_name, player_colour, player_status, cards, is_current_turn=False):
         ''' Creates a player frame
 
         :param parent: Parent to be attached too
@@ -20,6 +20,7 @@ class PlayerFrame(tk.Canvas):
         :param player_colour: Colour of player
         :param player_status: int. Reference to PLAYERCONSTANTS.py
         :param is_current_turn: Bol, True=Current turn, False=Not player turn
+        :param cards int, Amt of cards the player has.
         '''
         logging.info("Creating PlayerFRAME: {%s}", player_name)
         super().__init__(parent, name=player_name)
@@ -36,6 +37,15 @@ class PlayerFrame(tk.Canvas):
         self.widgets["player_name"].grid(row=0, column=0, padx=10, pady=10)
         self.widgets["is_player_alive"].grid(row=1, column=0, padx=10, pady=10)
 
+        self.columnconfigure(1, weight=1)
+        card_img = Image_label.Image_label(self, "card_back", "resources/images/card_backs/red_back.png")
+        card_img.resize_image_height_pixel_ratio(30)
+        card_img.grid(row=0, column=1, sticky=tk.E, rowspan=2)
+
+        # Widget not within dict as itll be disabled when bust.
+        self.card_amt = ttk.Label(self, text=("Cards: "+str(cards)), style="alive.playerFrame.TLabel")
+        self.card_amt.grid(row=0, column=2, sticky=tk.W, rowspan=2, padx=10)
+
         # Disable if dead
         if player_status == PLAYERCONSTANTS.BUST: self._on_dead_entity()
         if player_status == PLAYERCONSTANTS.STOOD: self._on_stood_entity()
@@ -50,6 +60,8 @@ class PlayerFrame(tk.Canvas):
         self.configure(background="#d9e324")
         self.widgets["is_player_alive"].configure(style="currentTurn.playerFrame.TLabel")
         self.widgets["player_name"].configure(style="currentTurn.playerFrame.TLabel")
+        self.card_amt.configure(style="currentTurn.playerFrame.TLabel")
+
 
     def _on_stood_entity(self):
         ''' Restyles to if player is stood

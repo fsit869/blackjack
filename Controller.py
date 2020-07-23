@@ -106,11 +106,11 @@ class Controller(tk.Tk):
         self.set_game_phase("gameframe")
         self.view.show_frame("Game_frame")
         self.view.update_game_frame({"current_turn": "player3",
-                                     "player1": PLAYERCONSTANTS.STOOD,
-                                     "player2": PLAYERCONSTANTS.BUST,
-                                     "player3": PLAYERCONSTANTS.ALIVE,
-                                     "player4": PLAYERCONSTANTS.ALIVE,
-                                     "player5":PLAYERCONSTANTS.ALIVE},
+                                     "player1": (PLAYERCONSTANTS.STOOD, 1),
+                                     "player2": (PLAYERCONSTANTS.BUST, 2),
+                                     "player3": (PLAYERCONSTANTS.ALIVE, 3),
+                                     "player4": (PLAYERCONSTANTS.ALIVE, 4),
+                                     "player5":(PLAYERCONSTANTS.ALIVE, 5)},
                                     None, False)
 
     def game_Loop(self):

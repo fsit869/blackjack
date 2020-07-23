@@ -90,9 +90,13 @@ class Game_frame(ttk.Frame):
             for player in playersdict:
                 player_frame = None
                 if current_turn == player:
-                    player_frame = PlayerFrame.PlayerFrame(self.top_frame, player, "blue", playersdict.get(player), True)
+                    player_frame = PlayerFrame.PlayerFrame(
+                        self.top_frame, player, "blue", playersdict.get(player)[0], playersdict.get(player)[1], True
+                    )
                 else:
-                    player_frame = PlayerFrame.PlayerFrame(self.top_frame, player, "blue", playersdict.get(player), False)
+                    player_frame = PlayerFrame.PlayerFrame(
+                        self.top_frame, player, "blue", playersdict.get(player)[0], playersdict.get(player)[1], False
+                    )
                 player_frame.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
 
     def update_card_display(self, cards):
