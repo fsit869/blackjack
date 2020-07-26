@@ -2,9 +2,12 @@
 
 A class containing constants of the cards. Constants referenced to img location.
 Used to have common names between model and view
-Similar to Java Enumerations
+Similar to Java Enumerations. Python does not support Enums (Similar to a class but with constants)
 
 CONSTANTS MUST BE ALL UPPER CASE.
+
+Edit: Future improvements, make all constants inside a class. THerefore methods can be used more
+efficiently. It will be more similar to how enums work in Java.
 '''
 
 _file_directory = "resources/images/cards/"
@@ -28,9 +31,9 @@ FOUR_D = _file_directory + "4D.png"
 FOUR_H = _file_directory + "4H.png"
 FOUR_S = _file_directory + "4S.png"
 FIVE_C = _file_directory + "5C.png"
-FOUR_D = _file_directory + "5D.png"
-FOUR_H = _file_directory + "5H.png"
-FOUR_S = _file_directory + "5S.png"
+FIVE_D = _file_directory + "5D.png"
+FIVE_H = _file_directory + "5H.png"
+FIVE_S = _file_directory + "5S.png"
 SIX_C = _file_directory + "6C.png"
 SIX_D = _file_directory + "6D.png"
 SIX_H = _file_directory + "6H.png"
@@ -63,3 +66,57 @@ QUEEN_C = _file_directory + "QC.png"
 QUEEN_D = _file_directory + "QD.png"
 QUEEN_H = _file_directory + "QH.png"
 QUEEN_S = _file_directory + "QS.png"
+
+# CARD VALUES MUST HAVE THE FOLLOWING NAMING FORMAT [STR_NUM]_[SUIT]_VAL
+TEN_C_VAL = 10
+TEN_D_VAL = 10
+TEN_H_VAL = 10
+TEN_S_VAL = 10
+TWO_C_VAL = 2
+TWO_D_VAL = 2
+TWO_H_VAL = 2
+TWO_S_VAL = 2
+THREE_C_VAL = 3
+THREE_D_VAL = 3
+THREE_H_VAL = 3
+THREE_S_VAL = 3
+FOUR_C_VAL = 4
+FOUR_D_VAL = 4
+FOUR_H_VAL = 4
+FOUR_S_VAL = 4
+FIVE_C_VAL = 5
+FIVE_D_VAL = 5
+FIVE_H_VAL = 5
+FIVE_S_VAL = 5
+SIX_C_VAL = 6
+SIX_D_VAL = 6
+SIX_H_VAL = 6
+SIX_S_VAL = 6
+SEVEN_C_VAL = 7
+SEVEN_D_VAL = 7
+SEVEN_H_VAL = 7
+SEVEN_S_VAL = 7
+EIGHT_C_VAL = 8
+EIGHT_D_VAL = 8
+EIGHT_H_VAL = 8
+EIGHT_S_VAL = 8
+NINE_C_VAL = 9
+NINE_D_VAL = 9
+NINE_H_VAL = 9
+NINE_S_VAL = 9
+ACE_C_VAL = (1, 11)
+ACE_D_VAL = (1, 11)
+ACE_H_VAL = (1, 11)
+ACE_S_VAL = (1, 11)
+JACK_C_VAL = 10
+JACK_D_VAL = 10
+JACK_H_VAL = 10
+JACK_S_VAL = 10
+KING_C_VAL = 10
+KING_D_VAL = 10
+KING_H_VAL = 10
+KING_S_VAL = 10
+QUEEN_C_VAL = 10
+QUEEN_D_VAL = 10
+QUEEN_H_VAL = 10
+QUEEN_S_VAL = 10
