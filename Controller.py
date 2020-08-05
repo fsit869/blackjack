@@ -42,7 +42,7 @@ class Controller(tk.Tk):
         }
 
         self.view = View.View(self, "Blackjack", self.CALLBACKS) # View object
-
+        self.model = GameModel.GameModel()
         # Actions
         self.set_game_phase("startup")
         self.view.show_frame("Startup_frame")
@@ -71,13 +71,7 @@ class Controller(tk.Tk):
             }
         :return: Dict
         '''
-        return {
-            "current_turn": "player4",
-            "player1": True,
-            "player2": True,
-            "player3": False,
-            "player4": False
-        }
+        pass
         # todo
 
     def on_stand(self):
@@ -111,7 +105,7 @@ class Controller(tk.Tk):
                                      "player3": (PLAYERCONSTANTS.ALIVE, 3),
                                      "player4": (PLAYERCONSTANTS.ALIVE, 4),
                                      "player5":(PLAYERCONSTANTS.ALIVE, 5)},
-                                    None, False)
+                                    (CARDCONSTANTS.JACK_H, CARDCONSTANTS.THREE_H), False)
 
     def game_Loop(self):
         ''' Game loop

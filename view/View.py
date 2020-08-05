@@ -26,7 +26,6 @@ class View():
             "Game_frame": Game_frame.Game_frame,
         }
 
-
         # Public vars
         self.root = root
         self.current_frame = None
