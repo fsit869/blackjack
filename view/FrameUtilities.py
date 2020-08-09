@@ -11,6 +11,7 @@ class FrameUtitlies:
     def __init__(self):
         pass
 
+    @staticmethod
     def show_warning_frame(self, title, text):
         '''When called, Shows a msgbox warning type
 
@@ -31,6 +32,7 @@ class FrameUtitlies:
         logging.error("Displaying err msgbox, %s, %s", title, text)
         messagebox.showerror(title, text)
 
+    @staticmethod
     def question_msg_frame(self, title, text):
         ''' When called, shows msgbox question type
 
@@ -42,6 +44,7 @@ class FrameUtitlies:
         answer = messagebox.askyesnocancel(title, text)
         return answer
 
+    @staticmethod
     def unpack_all_widgets(self, window_to_unpack):
         ''' Unpack all widgets from a specified frame/root
 
@@ -66,7 +69,7 @@ class FrameUtitlies:
 
     def destory_children(self, parent_frame):
         ''' Destroy all children from a frame
-
+        
         :param parent_frame: Frame to destroy children
         :return:
         '''

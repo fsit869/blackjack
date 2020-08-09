@@ -33,7 +33,7 @@ class View():
 
         # Public vars
         self.root = root
-        self._current_frame = None
+        self.current_frame = None
 
         self.style = Style.Style()
 
@@ -74,6 +74,15 @@ class View():
         frame_to_display._resize_min_root() # Method all frames have inhreited from IFrame
         self._centre_root()
 
+    def update_frame(self, dict):
+        ''' Update frame current displayed.
+        Note if frame has nothing to update, it will do nothing
+
+        :param dict:
+        :return:
+        '''
+        self.current_frame.update_frame(dict)
+
     def get_root_width(self):
         ''' Get root width
 
@@ -93,6 +102,9 @@ class View():
         self.root.update_idletasks()
         self.root.update()
         return self.root.winfo_height()  # Root height
+
+    def get_current_frame_name(self):
+        return self.current_frame.toString()
 
     def _create_frames(self, frames_to_init):
         ''' Private method. Creates all frames listed in constructor and stores in self._frame_objects dict

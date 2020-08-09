@@ -8,7 +8,8 @@ import tkinter as tk
 import logging
 from view import View
 from model import GameModel
-from resources import CARDCONSTANTS, PLAYERCONSTANTS
+from resources.CARDCONSTANTS import CARDCONSTANTS
+from resources.PLAYERCONSTANTS import PLAYERCONSTANTS
 
 class GAMEPHASE:
     ''' Constants in the phase of the game. This class cannot be initiated. Else
@@ -29,7 +30,22 @@ class Controller(tk.Tk):
         self.view = View.View(self, "Blackjack") # View object
         # self.model = GameModel.GameModel()
 
+        # self.view.show_frame("Startup_frame")
         self.view.show_frame("Game_frame")
+        self.view.update_frame({
+            PLAYERCONSTANTS: {
+                "current_turn": "player1",
+                "player1": (PLAYERCONSTANTS.STOOD, 69),
+                "player2": (PLAYERCONSTANTS.BUST, 2),
+                "player3": (PLAYERCONSTANTS.ALIVE, 2),
+            },
+
+            CARDCONSTANTS: [
+                CARDCONSTANTS.FOUR_S,
+                CARDCONSTANTS.TEN_H
+            ]
+
+        })
 
     def start_game(self):
         pass

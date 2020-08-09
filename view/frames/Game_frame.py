@@ -75,14 +75,40 @@ class Game_frame(IFrame.IFrame):
         self.update_card_display([CARDCONSTANTS.FOUR_C, CARDCONSTANTS.FIVE_C])
 
     def set_frame_name(self):
+        ''' Overwritten from IFrame.py
+
+        :return:
+        '''
         return "Game_frame"
+
+    def update_frame(self, dict):
+        ''' Upates the players and cards
+
+        {
+        PLAYERCONSTANTS:
+            {
+                str(current_turn): str(player),
+                str(player1): (PLAYERCONSTANTS.STOOD, 2),
+                str(player2): (PLAYERCONSTANTS.ALIVE, 4),
+                str(player3): (PLAYERCONSTANTS.STOOD, 2),
+            },
+
+        CARDCONSTANTS:
+            [CARDCONSTANTS.FOUR_S, CARDCONSTANTS._FIVE_C]
+        }
+
+        :param dict:
+        :return:
+        '''
+        self.update_player_display(dict.get(PLAYERCONSTANTS))
+        self.update_card_display(dict.get(CARDCONSTANTS))
 
     def update_player_display(self, playersdict):
         ''' Updates the player board
 
         :return:
         '''
-        # self._playersdict = playersdict.copy() # Players_dict never none thus copy used
+        self._playersdict = playersdict.copy() # Players_dict never none thus copy used
         if playersdict != None:
             FrameUtitlies.destory_children(self, self.top_frame)
             # playersdict = self.callbacks.get("game.getPlayers")()  # {str(current_player):player, str(player):bool(status)}
