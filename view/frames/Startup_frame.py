@@ -6,45 +6,35 @@ before the game starts.
 '''
 
 import tkinter as tk
-import logging
-from view import Image_label
-from view.frames.subframes import Copyright_window
 from tkinter import ttk as ttk
+from view import IFrame, Image_label
+from view.frames.subframes import Copyright_window
 
-class Startup_frame(ttk.Frame):
-    def __init__(self, view, parent, top_level, style, callbacks):
+class Startup_frame(IFrame.IFrame):
+    def __init__(self, view, parent, top_level, style):
         ''' Constructor to create Startup_frame
         ;:param view: View layer
         :param parent: Parent
         :param top_level: Toplevel
         :param style: Style
         '''
-        logging.info("\n--------------------------------------------------\n"
-                     "###### Startup_Frame constructor begins ######\n"
-                     "--------------------------------------------------")
-
-        # Public variables
-        self.top_level = top_level
-        self.view = view
-        self.style = style
-        self.callbacks = callbacks
-        self.input_widgets = {} # {widget_name:widget object}
-        self.input_vars = {}
-
+        super().__init__(view, parent, top_level, style)
+        self.set_frame_name()
         self.STARTUP_FRAME_WIDTH = int(self.view.SCREEN_WIDTH / 4)
         self.STARTUP_FRAME_HEIGHT = int(self.view.SCREEN_HEIGHT / 1.5)
 
-        # Setup Frame
-        super().__init__(parent)
-
         # Title
-        Image_label.Image_label(self, "title_image", "resources/images/card_collections/aces.png", int(self.view.SCREEN_HEIGHT / 2.5),
-                                int(self.view.SCREEN_WIDTH / 8.5)).pack()
+        Image_label.Image_label(
+            self, "title_image",
+            "resources/images/card_collections/aces.png",
+            int(self.view.SCREEN_HEIGHT / 2.5),
+            int(self.view.SCREEN_WIDTH / 8.5)
+        ).pack()
         ttk.Label(self, text="Blackjack", style="title.default.TLabel").pack()
 
-        ##########
-        # Inputs #
-        ##########
+        # ##########
+        # # Inputs #
+        # ##########
 
         # Input frame
         input_frame = ttk.Frame(self)
@@ -75,44 +65,19 @@ class Startup_frame(ttk.Frame):
         ###########
         # Buttons #
         ###########
-        ttk.Button(self, text="Quit", command=self.callbacks["startupFrame.quit"], style="quit.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=(5, 40), side=tk.BOTTOM)
+        ttk.Button(self, text="Quit", style="quit.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=(5, 40), side=tk.BOTTOM)
         ttk.Button(self, text="Copyright", command=self._on_copyright_button, style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
         ttk.Button(self, text="Help", style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
-        ttk.Button(self, text="Play", command=self.callbacks["startupFrame.play"], style="play.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
+        ttk.Button(self, text="Play", style="play.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
 
-        logging.info("\n"
-                     "------------------------------------------------\n"
-                     "###### Startup Frame constructor finish ######\n"
-                     "------------------------------------------------")
-
-    def get_inputs(self):
-        ''' Get all inputs from input widgets
-
-        :return: Dict {Widget name: Value}
-        '''
-        input_vals = {}
-        for widget_name, var_obj in self.input_vars.items():
-            logging.info("Getting value from %s widget", widget_name)
-            input_vals[widget_name] = var_obj.get()
-        return input_vals
+    def set_frame_name(self):
+        return "Startup_frame"
 
     def _on_help_button(self):
         pass
 
     def _on_copyright_button(self):
         copyright_window = Copyright_window.Copyright_window()
-
-    def _resize_min_root(self):
-        ''' Resizes root to size optimal for this frame
-
-        :return: None
-        '''
-        logging.info("Resizing root for Startup_frame")
-        self.view.set_root_min_size(
-            self.STARTUP_FRAME_WIDTH,
-            self.STARTUP_FRAME_HEIGHT
-        )
-        self.top_level.state('normal')
 
     def _validate_numbers_only(self, action, value_if_allowed, text, trigger_type, text_before_change):
         '''Private function. Not Meant to be accessed by other functions
@@ -126,7 +91,6 @@ class Startup_frame(ttk.Frame):
         :return: True, Accept the user input
         :return: False: Reject the user input
         '''
-        logging.debug("Spinbox validation run")
         if action == 0 or trigger_type == "forced":
             return False
         elif value_if_allowed == "":

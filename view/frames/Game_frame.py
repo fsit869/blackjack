@@ -5,15 +5,16 @@ the game and other players. Contains the possible actions the player can take.
 
 '''
 
-import logging
 import tkinter as tk
-from tkinter import ttk as ttk
-from resources import CARDCONSTANTS
-from view import Image_label
+from tkinter import ttk
+from view import IFrame, Image_label
 from view.frames.subframes import PlayerFrame
+from view.FrameUtilities import FrameUtitlies
+from resources.CARDCONSTANTS import CARDCONSTANTS
+from resources.PLAYERCONSTANTS import PLAYERCONSTANTS
 
-class Game_frame(ttk.Frame):
-    def __init__(self, view, parent, top_level, style, callbacks):
+class Game_frame(IFrame.IFrame):
+    def __init__(self, view, parent, top_level, style):
         ''' Constructor to create Startup_frame
 
         :param parent: Parent
@@ -21,24 +22,15 @@ class Game_frame(ttk.Frame):
         :param style: Style
         :param callbacks: Callbacks to access
         '''
-        logging.debug("Game_frame constructor begins")
-
-        # Public variables
-        self.top_level = top_level
-        self.view = view
-        self.style = style
-        self.callbacks = callbacks
-        self.input_vars = {}
-        self.input_widgets = {}
-
         self._playersdict = None # Current players displayed.
         self._cards = None # Current cards displayed
-
         self._alarm_handler_obj = None # Reference for Config _on_resize
 
         # Frame settings
-        super().__init__(parent)
-        self._resize_min_root() # Resizes root
+        super().__init__(view, parent, top_level, style)
+        self.set_frame_name()
+        # self._resize_min_root() # todo possibly delete check
+
         self.columnconfigure(0, weight=1)
         # self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
@@ -61,8 +53,8 @@ class Game_frame(ttk.Frame):
         self.bot_frame.grid(row=2, column=0, sticky=tk.NSEW)
 
         self.text_info = ttk.Label(self.bot_frame, anchor=tk.CENTER, style="statusBar.gameFrame.TLabel")
-        self.hit_button = ttk.Button(self.bot_frame, text="Hit", style="hitButton.gameFrame.TButton", command=callbacks.get("gameFrame.hit"))
-        self.stand_button = ttk.Button(self.bot_frame, text="Stand", style="standButton.gameFrame.TButton", command=callbacks.get("gameFrame.stand"))
+        self.hit_button = ttk.Button(self.bot_frame, text="Hit", style="hitButton.gameFrame.TButton")
+        self.stand_button = ttk.Button(self.bot_frame, text="Stand", style="standButton.gameFrame.TButton")
 
         self.text_info.grid(row=0, columnspan=2, sticky=tk.NSEW, padx=10)
         self.hit_button.grid(row=1, column=0, sticky=tk.NSEW, padx=10, pady=10)
@@ -72,18 +64,27 @@ class Game_frame(ttk.Frame):
         self.disable_player_buttons(False) # Toggle buttons
         self.bind("<Configure>", self._on_resize) # Dynamic resizing
         # self.disable_player_buttons(True)
-        logging.debug("Game_frame constructor ends")
+
+        # Debugging
+        self.update_player_display({"current_turn": "player3",
+                                     "player1": (PLAYERCONSTANTS.STOOD, 1),
+                                     "player2": (PLAYERCONSTANTS.BUST, 2),
+                                     "player3": (PLAYERCONSTANTS.ALIVE, 3),
+                                     "player4": (PLAYERCONSTANTS.ALIVE, 4),
+                                     "player5":(PLAYERCONSTANTS.ALIVE, 5)})
+        self.update_card_display([CARDCONSTANTS.FOUR_C, CARDCONSTANTS.FIVE_C])
+
+    def set_frame_name(self):
+        return "Game_frame"
 
     def update_player_display(self, playersdict):
         ''' Updates the player board
 
         :return:
         '''
-        self._playersdict = playersdict.copy() # Players_dict never none thus copy used
+        # self._playersdict = playersdict.copy() # Players_dict never none thus copy used
         if playersdict != None:
-            logging.info("Updating player board")
-
-            self.view.destory_children(self.top_frame)
+            FrameUtitlies.destory_children(self, self.top_frame)
             # playersdict = self.callbacks.get("game.getPlayers")()  # {str(current_player):player, str(player):bool(status)}
             current_turn = playersdict.pop("current_turn")
 
@@ -107,15 +108,15 @@ class Game_frame(ttk.Frame):
         '''
         self._cards = cards # Card could be None type
         if cards != None:
-            # Get size of cards
+            # Get max size of cards
             card_width = (self.view.get_root_width() / len(cards)) - 10 # -20 To allow space in side
             max_height = int(self.view.get_root_height() / 2.5) # Max pixel height of cards. (Prevents oversize)
-            self.view.destory_children(self.mid_frame)
+            FrameUtitlies.destory_children(self, self.mid_frame)
             # Find ratio of card to fit into frame
             while(True):
                 # Original card sizes
-                original_width = CARDCONSTANTS.CARD_PIXEL_WIDTH
-                original_height = CARDCONSTANTS.CARD_PIXEL_HEIGHT
+                original_width = CARDCONSTANTS.CARD_PIXEL_WIDTH.value
+                original_height = CARDCONSTANTS.CARD_PIXEL_HEIGHT.value
 
                 # Find percentage change of width, get according ratio height
                 width_percentage_change = (card_width/original_width)
@@ -129,8 +130,7 @@ class Game_frame(ttk.Frame):
 
             # Pack cards
             for card in cards:
-                logging.debug("Added card img %s", card)
-                img = Image_label.Image_label(self.mid_frame, card, card, style="cardBackground.gameFrame.TLabel")
+                img = Image_label.Image_label(self.mid_frame, card, card.IMAGELOCATION(), style="cardBackground.gameFrame.TLabel")
                 img.resize_image_width_pixel_ratio(card_width)
                 img.pack(side=tk.LEFT)
 
@@ -149,7 +149,6 @@ class Game_frame(ttk.Frame):
             self.stand_button.configure(state=tk.NORMAL)
             self.text_info.config(text="Your turn")
         else:
-            logging.critical("Invaild key in disable_player_buttons")
             raise KeyError("Invalid key, bool required. Recieved type {}  [\"{}\"]".format(
                 type(bool), bool
             ))
@@ -183,7 +182,6 @@ class Game_frame(ttk.Frame):
 
         :return:
         '''
-        logging.info("Resizing root for Game_frame")
         self.view.set_root_min_size(
             int(self.view.SCREEN_WIDTH/2),
             int(self.view.SCREEN_HEIGHT/2),

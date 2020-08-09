@@ -14,7 +14,7 @@ This allows for
 from abc import ABC, abstractmethod
 from resources import PLAYERCONSTANTS
 
-class Abstract_Entity(ABC):
+class Abstract_Entity(ABC): # todo fix
     def __init__(self, deck_to_pull):
         self.value = 0
         self.status = PLAYERCONSTANTS.ALIVE
@@ -37,7 +37,7 @@ class Abstract_Entity(ABC):
             pass
             # todo if player picks up ace. it could be 1 or 11
 
-    def set_status(self, status):
+    def set_status(self, status): # todo fix
         if status == PLAYERCONSTANTS.ALIVE: self.status = PLAYERCONSTANTS.ALIVE
         elif status == PLAYERCONSTANTS.BUST: self.status == PLAYERCONSTANTS.BUST
         elif status == PLAYERCONSTANTS.STOOD: self.status == PLAYERCONSTANTS.STOOD
@@ -45,7 +45,7 @@ class Abstract_Entity(ABC):
 
     def get_decision(self):
         action = self.get_decision()
-        if action == PLAYERCONSTANTS.HIT: self.hit()
+        if action == PLAYERCONSTANTS.HIT: self.hit() # todo fix
         elif action == PLAYERCONSTANTS.STAND: self.stand()
         else: raise KeyError("Invalid keyword, {}".format(action))
 

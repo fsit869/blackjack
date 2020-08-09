@@ -26,95 +26,15 @@ class Controller(tk.Tk):
     def __init__(self):
         super().__init__()
         # Public variables
-        self.GAMEPHASE = None # Set to None as not initialized yet
+        self.view = View.View(self, "Blackjack") # View object
+        # self.model = GameModel.GameModel()
 
-        # CALLBACKS. This will be used in the view layer. Used to get data from model to view
-        self.CALLBACKS = {
-            "startupFrame.play": self.goto_Game_Frame,
-            "startupFrame.quit": self.quit_program,
-
-            "gameFrame.hit": self.on_hit,
-            "gameFrame.stand": self.on_stand,
-
-            "game.getPlayers":self.get_players,
-
-            "quit":self.quit_program,
-        }
-
-        self.view = View.View(self, "Blackjack", self.CALLBACKS) # View object
-        self.model = GameModel.GameModel()
-        # Actions
-        self.set_game_phase("startup")
-        self.view.show_frame("Startup_frame")
-        # self.view.show_frame("Game_frame")
-
-    def set_game_phase(self, phase):
-        ''' Set the game phase
-
-        :param GAMEPHASE: String
-        :return: None
-        '''
-        if phase == "startup":
-            self.GAMEPHASE = GAMEPHASE.STARTUP
-        elif phase == "gameframe":
-            self.GAMEPHASE = GAMEPHASE.GAMEFRAME
-        elif phase == "endframe":
-            self.GAMEPHASE = GAMEPHASE.ENDFRAME
-        else:
-            raise KeyError("Unknown KEY PHASE, [{}]".format(phase))
-
-    def get_players(self):
-        ''' Get players from the model
-            {
-                (str) current_turn : (str) player,
-                (str) playername : (bool) Dead
-            }
-        :return: Dict
-        '''
-        pass
-        # todo
-
-    def on_stand(self):
-        # todo
-        print("Stand")
-        pass
-
-    def on_hit(self):
-        pass
-
-    def goto_Startup_Frame(self):
-        ''' Switch to startup frame
-
-        :return: None
-        '''
-        self.set_game_phase("startup")
-        pass
-
-    def goto_Game_Frame(self):
-        ''' Switch to game frame
-
-        :return:
-        '''
-        input_vals = self.view.current_frame.get_inputs()
-        # print(input_vals)
-        self.set_game_phase("gameframe")
         self.view.show_frame("Game_frame")
-        self.view.update_game_frame({"current_turn": "player3",
-                                     "player1": (PLAYERCONSTANTS.STOOD, 1),
-                                     "player2": (PLAYERCONSTANTS.BUST, 2),
-                                     "player3": (PLAYERCONSTANTS.ALIVE, 3),
-                                     "player4": (PLAYERCONSTANTS.ALIVE, 4),
-                                     "player5":(PLAYERCONSTANTS.ALIVE, 5)},
-                                    (CARDCONSTANTS.JACK_H, CARDCONSTANTS.THREE_H), False)
 
-    def game_Loop(self):
-        ''' Game loop
-        :return:
-        '''
-        # todo Loop called whenever player presses the hit or stand button
-        # Here decides wut player does
-        # Here does bot action
-        # Here does update screen
+    def start_game(self):
+        pass
+
+    def game_loop(self):
         pass
 
     def quit_program(self):

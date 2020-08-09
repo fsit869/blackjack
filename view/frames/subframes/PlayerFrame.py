@@ -9,7 +9,7 @@ import tkinter as tk
 import logging
 from tkinter import ttk
 from view import Image_label
-from resources import PLAYERCONSTANTS
+from resources.PLAYERCONSTANTS import PLAYERCONSTANTS
 
 class PlayerFrame(tk.Canvas):
     def __init__(self, parent, player_name, player_colour, player_status, cards, is_current_turn=False):
@@ -46,7 +46,7 @@ class PlayerFrame(tk.Canvas):
         self.card_amt = ttk.Label(self, text=("Cards: "+str(cards)), style="alive.playerFrame.TLabel")
         self.card_amt.grid(row=0, column=2, sticky=tk.W, rowspan=2, padx=10)
 
-        # Disable if dead
+        # Disable if dead # todo check wtf this is
         if player_status == PLAYERCONSTANTS.BUST: self._on_dead_entity()
         if player_status == PLAYERCONSTANTS.STOOD: self._on_stood_entity()
 

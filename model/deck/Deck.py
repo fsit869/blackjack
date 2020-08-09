@@ -24,7 +24,7 @@ class Deck():
         self.deck.clear()
         self.picked_up_deck.clear()
 
-        for CONSTANT in dir(CARDCONSTANTS):
+        for CONSTANT in dir(CARDCONSTANTS): # todo FIX
             if CONSTANT.endswith("_VAL"):
                 self.deck.append(Card.Card(eval("CARDCONSTANTS."+CONSTANT[:-4]),eval("CARDCONSTANTS."+CONSTANT)))
         self.shuffle_deck()
