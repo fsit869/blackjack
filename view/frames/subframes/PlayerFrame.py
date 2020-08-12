@@ -11,6 +11,7 @@ from tkinter import ttk
 from view import Image_label
 from resources.PLAYERCONSTANTS import PLAYERCONSTANTS
 
+# todo if have time, display each player cards
 class PlayerFrame(tk.Canvas):
     def __init__(self, parent, player_name, player_colour, player_status, cards, is_current_turn=False):
         ''' Creates a player frame
@@ -23,7 +24,7 @@ class PlayerFrame(tk.Canvas):
         :param cards int, Amt of cards the player has.
         '''
         logging.info("Creating PlayerFRAME: {%s}", player_name)
-        super().__init__(parent, name=player_name)
+        super().__init__(parent, ) # name=player_name todo has this as arg, check purpose
         self.player_colour = player_colour
         self.player_status = player_status
         self.is_current_turn = False
@@ -46,7 +47,7 @@ class PlayerFrame(tk.Canvas):
         self.card_amt = ttk.Label(self, text=("Cards: "+str(cards)), style="alive.playerFrame.TLabel")
         self.card_amt.grid(row=0, column=2, sticky=tk.W, rowspan=2, padx=10)
 
-        # Disable if dead # todo check wtf this is
+        # Disable if dead
         if player_status == PLAYERCONSTANTS.BUST: self._on_dead_entity()
         if player_status == PLAYERCONSTANTS.STOOD: self._on_stood_entity()
 

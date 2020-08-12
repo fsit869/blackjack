@@ -24,9 +24,8 @@ class Deck():
         self.deck.clear()
         self.picked_up_deck.clear()
 
-        for CONSTANT in dir(CARDCONSTANTS): # todo FIX
-            if CONSTANT.endswith("_VAL"):
-                self.deck.append(Card.Card(eval("CARDCONSTANTS."+CONSTANT[:-4]),eval("CARDCONSTANTS."+CONSTANT)))
+        for CONSTANT in CARDCONSTANTS.CARDCONSTANTS.get_all_cards(): # todo may crash
+            self.deck.append(Card.Card(CONSTANT))
         self.shuffle_deck()
 
     def shuffle_deck(self):
@@ -43,7 +42,7 @@ class Deck():
 
         :return:
         '''
-        if self.check_deck_empty():
+        if not self.check_deck_empty():
             picked_up_card = self.deck.pop(0)
             self.picked_up_deck.append(picked_up_card)
             return picked_up_card

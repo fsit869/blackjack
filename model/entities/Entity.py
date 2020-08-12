@@ -11,48 +11,46 @@ This allows for
 '''
 
 
-from abc import ABC, abstractmethod
-from resources import PLAYERCONSTANTS
+from resources.PLAYERCONSTANTS import PLAYERCONSTANTS
 
-class Abstract_Entity(ABC): # todo fix
-    def __init__(self, deck_to_pull):
+class Entity():
+    def __init__(self, is_bot, name):
         self.value = 0
         self.status = PLAYERCONSTANTS.ALIVE
-        self.deck_to_pull = deck_to_pull
+        self.entity_cards = []
+        self.is_bot = is_bot
+        self.name = name
 
-    def hit(self):
-        card_obj_picked = self.deck_to_pull.pickup_card()
-        card_val = card_obj_picked.get_value()
-        card_name = card_obj_picked.get_name()
-
-        self.value += card_val
-        self.check_bust()
-        return card_name
-
-    def stand(self):
-        pass
-
-    def check_bust_win(self):
+    def check_bust_win(self): # todo maybe move this to GameModel class?
         if self.value == 21:
             pass
             # todo if player picks up ace. it could be 1 or 11
 
-    def set_status(self, status): # todo fix
-        if status == PLAYERCONSTANTS.ALIVE: self.status = PLAYERCONSTANTS.ALIVE
-        elif status == PLAYERCONSTANTS.BUST: self.status == PLAYERCONSTANTS.BUST
-        elif status == PLAYERCONSTANTS.STOOD: self.status == PLAYERCONSTANTS.STOOD
-        else: raise KeyError("Invalid keyword, {}".format(status))
+    def set_status(self, playerconstant_status): # todo fix
+        if playerconstant_status == PLAYERCONSTANTS.ALIVE: self.status = PLAYERCONSTANTS.ALIVE
+        elif playerconstant_status == PLAYERCONSTANTS.BUST: self.status = PLAYERCONSTANTS.BUST
+        elif playerconstant_status == PLAYERCONSTANTS.STOOD: self.status = PLAYERCONSTANTS.STOOD
+        else: raise KeyError("Invalid keyword, {}".format(playerconstant_status))
 
-    def get_decision(self):
-        action = self.get_decision()
-        if action == PLAYERCONSTANTS.HIT: self.hit() # todo fix
-        elif action == PLAYERCONSTANTS.STAND: self.stand()
-        else: raise KeyError("Invalid keyword, {}".format(action))
+    def get_status(self):
+        return self.status
 
-    @abstractmethod
-    def get_decision_helper(self):
-        ''' To follow the template helper pattern this method is called get_decision_helper()
+    def get_is_bot(self):
+        return self.is_bot
 
-        :return: int (PLAYERCONSTANTS hit/stand)
+    def get_name(self):
+        return self.name
+
+    def add_card(self, CARD):
+        ''' Add a card to the entity
+
+        :return:
         '''
-        pass
+        self.entity_cards.append(CARD)
+
+    def get_cards(self):
+        ''' Get players cards
+
+        :return:
+        '''
+        return self.entity_cards

@@ -16,7 +16,7 @@ from view.frames import Startup_frame, Game_frame
 
 class View():
 
-    def __init__(self, root, application_name):
+    def __init__(self, root, application_name, callbacks):
         ''' Constructor. Setup root and frames
 
         :param application_name: Root name
@@ -34,17 +34,18 @@ class View():
         # Public vars
         self.root = root
         self.current_frame = None
-
+        self.callbacks = callbacks
         self.style = Style.Style()
 
         # Config root settings
         self.root.title(application_name)
-        # self.root.protocol('WM_DELETE_WINDOW', callbacks.get("quit")) todo fix
+        # self.root.protocol('WM_DELETE_WINDOW', callbacks.get("quit_program")) # todo fix
         self.SCREEN_WIDTH = self.root.winfo_screenwidth()  # Display width
         self.SCREEN_HEIGHT = self.root.winfo_screenheight()  # Display height
 
         # Create frames
         self._create_frames(self.frames_to_init)
+
 
     def set_root_min_size(self, width, height):
         ''' Set min size of root
@@ -83,6 +84,9 @@ class View():
         '''
         self.current_frame.update_frame(dict)
 
+    def get_inputs(self):
+        return self.current_frame.get_inputs()
+
     def get_root_width(self):
         ''' Get root width
 
@@ -116,7 +120,7 @@ class View():
         for frame_class in frames_to_init:
             frame_object = frame_class(
                 view=self, parent=self.root, top_level=self.root,
-                style=self.style
+                style=self.style, callbacks=self.callbacks
             )  # Create frame obj
             frame_name = frame_object.toString() # Method all IFrame's have
             self.frame_objects[frame_name] = frame_object  # Store frame for future reference

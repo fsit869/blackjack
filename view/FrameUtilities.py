@@ -22,6 +22,7 @@ class FrameUtitlies:
         logging.warning("Displaying warning msgbox, %s, %s", title, text)
         messagebox.showwarning(title, text)
 
+    @staticmethod
     def show_error_frame(self, title, text):
         '''When called, shows msgbox error type
 
@@ -56,6 +57,7 @@ class FrameUtitlies:
         for widget in window_slaves:
             widget.pack_forget()
 
+    @staticmethod
     def ungrid_all_widgets(self, window_to_ungrid):
         ''' Unpack all widgets from a specified frame/root
 
@@ -67,9 +69,10 @@ class FrameUtitlies:
         for widget in window_slaves:
             widget.grid_forget()
 
+    @staticmethod
     def destory_children(self, parent_frame):
         ''' Destroy all children from a frame
-        
+
         :param parent_frame: Frame to destroy children
         :return:
         '''

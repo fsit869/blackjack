@@ -14,7 +14,7 @@ from resources.CARDCONSTANTS import CARDCONSTANTS
 from resources.PLAYERCONSTANTS import PLAYERCONSTANTS
 
 class Game_frame(IFrame.IFrame):
-    def __init__(self, view, parent, top_level, style):
+    def __init__(self, view, parent, top_level, style, callbacks):
         ''' Constructor to create Startup_frame
 
         :param parent: Parent
@@ -27,9 +27,9 @@ class Game_frame(IFrame.IFrame):
         self._alarm_handler_obj = None # Reference for Config _on_resize
 
         # Frame settings
-        super().__init__(view, parent, top_level, style)
+        super().__init__(view, parent, top_level, style, callbacks)
         self.set_frame_name()
-        # self._resize_min_root() # todo possibly delete check
+        self._resize_min_root() # todo possibly delete check
 
         self.columnconfigure(0, weight=1)
         # self.rowconfigure(0, weight=1)
@@ -66,13 +66,6 @@ class Game_frame(IFrame.IFrame):
         # self.disable_player_buttons(True)
 
         # Debugging
-        self.update_player_display({"current_turn": "player3",
-                                     "player1": (PLAYERCONSTANTS.STOOD, 1),
-                                     "player2": (PLAYERCONSTANTS.BUST, 2),
-                                     "player3": (PLAYERCONSTANTS.ALIVE, 3),
-                                     "player4": (PLAYERCONSTANTS.ALIVE, 4),
-                                     "player5":(PLAYERCONSTANTS.ALIVE, 5)})
-        self.update_card_display([CARDCONSTANTS.FOUR_C, CARDCONSTANTS.FIVE_C])
 
     def set_frame_name(self):
         ''' Overwritten from IFrame.py
@@ -108,8 +101,9 @@ class Game_frame(IFrame.IFrame):
 
         :return:
         '''
-        self._playersdict = playersdict.copy() # Players_dict never none thus copy used
+        # self._playersdict = playersdict.copy() # Players_dict never none thus copy used # todo check why it was outside if loop
         if playersdict != None:
+            self._playersdict = playersdict.copy()
             FrameUtitlies.destory_children(self, self.top_frame)
             # playersdict = self.callbacks.get("game.getPlayers")()  # {str(current_player):player, str(player):bool(status)}
             current_turn = playersdict.pop("current_turn")
@@ -132,8 +126,9 @@ class Game_frame(IFrame.IFrame):
         :param cards: List/Tuple, Cards to display. (Use CARDCONSTANTS class)
         :return: None
         '''
+
         self._cards = cards # Card could be None type
-        if cards != None:
+        if cards != None and len(cards)!=0:
             # Get max size of cards
             card_width = (self.view.get_root_width() / len(cards)) - 10 # -20 To allow space in side
             max_height = int(self.view.get_root_height() / 2.5) # Max pixel height of cards. (Prevents oversize)
@@ -141,8 +136,8 @@ class Game_frame(IFrame.IFrame):
             # Find ratio of card to fit into frame
             while(True):
                 # Original card sizes
-                original_width = CARDCONSTANTS.CARD_PIXEL_WIDTH.value
-                original_height = CARDCONSTANTS.CARD_PIXEL_HEIGHT.value
+                original_width = CARDCONSTANTS.IMG_PIXEL_WIDTH.value
+                original_height = CARDCONSTANTS.IMG_PIXEL_HEIGHT.value
 
                 # Find percentage change of width, get according ratio height
                 width_percentage_change = (card_width/original_width)

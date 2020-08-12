@@ -6,7 +6,7 @@ ALL frames being displayed must implement this interface.
 import tkinter as tk
 from tkinter import ttk
 class IFrame(ttk.Frame):
-    def __init__(self, view, parent, top_level, style):
+    def __init__(self, view, parent, top_level, style, callbacks):
         ''' Init. ALL SUBCLASSES MUST CALL THIS ELSE EXCEPTION
 
         :param view:
@@ -21,6 +21,7 @@ class IFrame(ttk.Frame):
         self.parent = parent
         self.top_level = top_level
         self.style = style
+        self.callbacks = callbacks
 
         self.STARTUP_FRAME_WIDTH = int(self.view.SCREEN_WIDTH)  # Override to change min width
         self.STARTUP_FRAME_HEIGHT = int(self.view.SCREEN_HEIGHT) # Override to change min height

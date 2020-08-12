@@ -11,14 +11,14 @@ from view import IFrame, Image_label
 from view.frames.subframes import Copyright_window
 
 class Startup_frame(IFrame.IFrame):
-    def __init__(self, view, parent, top_level, style):
+    def __init__(self, view, parent, top_level, style, callbacks):
         ''' Constructor to create Startup_frame
         ;:param view: View layer
         :param parent: Parent
         :param top_level: Toplevel
         :param style: Style
         '''
-        super().__init__(view, parent, top_level, style)
+        super().__init__(view, parent, top_level, style, callbacks)
         self.set_frame_name()
         self.STARTUP_FRAME_WIDTH = int(self.view.SCREEN_WIDTH / 4)
         self.STARTUP_FRAME_HEIGHT = int(self.view.SCREEN_HEIGHT / 1.5)
@@ -68,7 +68,7 @@ class Startup_frame(IFrame.IFrame):
         ttk.Button(self, text="Quit", style="quit.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=(5, 40), side=tk.BOTTOM)
         ttk.Button(self, text="Copyright", command=self._on_copyright_button, style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
         ttk.Button(self, text="Help", style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
-        ttk.Button(self, text="Play", style="play.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
+        ttk.Button(self, text="Play", command=self.callbacks.get("startup_game"), style="play.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
 
     def set_frame_name(self):
         return "Startup_frame"
