@@ -14,8 +14,10 @@ class PLAYERCONSTANTS(Enum):
     ALIVE = 2
     BUST = 3
     STOOD = 4
+    WIN = 7
 
     # Player actions
     HIT = 5
     STAND = 6 # Not to be confused with stood, which is a player statusx   x
+
 

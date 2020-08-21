@@ -14,7 +14,7 @@ from resources.CARDCONSTANTS import CARDCONSTANTS
 from resources.PLAYERCONSTANTS import PLAYERCONSTANTS
 
 class Game_frame(IFrame.IFrame):
-    def __init__(self, view, parent, top_level, style, callbacks):
+    def __init__(self, view, parent, root, top_level, style, callbacks):
         ''' Constructor to create Startup_frame
 
         :param parent: Parent
@@ -27,7 +27,7 @@ class Game_frame(IFrame.IFrame):
         self._alarm_handler_obj = None # Reference for Config _on_resize
 
         # Frame settings
-        super().__init__(view, parent, top_level, style, callbacks)
+        super().__init__(view, parent, root,top_level, style, callbacks)
         self.set_frame_name()
         self._resize_min_root() # todo possibly delete check
 
@@ -53,8 +53,8 @@ class Game_frame(IFrame.IFrame):
         self.bot_frame.grid(row=2, column=0, sticky=tk.NSEW)
 
         self.text_info = ttk.Label(self.bot_frame, anchor=tk.CENTER, style="statusBar.gameFrame.TLabel")
-        self.hit_button = ttk.Button(self.bot_frame, text="Hit", style="hitButton.gameFrame.TButton")
-        self.stand_button = ttk.Button(self.bot_frame, text="Stand", style="standButton.gameFrame.TButton")
+        self.hit_button = ttk.Button(self.bot_frame, command=callbacks.get("on_hit"), text="Hit", style="hitButton.gameFrame.TButton")
+        self.stand_button = ttk.Button(self.bot_frame, command=callbacks.get("on_stand"), text="Stand", style="standButton.gameFrame.TButton")
 
         self.text_info.grid(row=0, columnspan=2, sticky=tk.NSEW, padx=10)
         self.hit_button.grid(row=1, column=0, sticky=tk.NSEW, padx=10, pady=10)
@@ -154,6 +154,9 @@ class Game_frame(IFrame.IFrame):
                 img = Image_label.Image_label(self.mid_frame, card, card.IMAGELOCATION(), style="cardBackground.gameFrame.TLabel")
                 img.resize_image_width_pixel_ratio(card_width)
                 img.pack(side=tk.LEFT)
+        elif len(cards) == 0:
+            # Clear cards if present
+            FrameUtitlies.destory_children(self, self.mid_frame)
 
     def disable_player_buttons(self, bool):
         ''' Deactivate player buttons
@@ -207,5 +210,6 @@ class Game_frame(IFrame.IFrame):
             int(self.view.SCREEN_WIDTH/2),
             int(self.view.SCREEN_HEIGHT/2),
         )
+        self.root
         self.top_level.state('zoomed')
 

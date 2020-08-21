@@ -36,7 +36,7 @@ class Deck():
         shuffle(self.deck)
 
     def pickup_card(self):
-        ''' Pickup a card. (Returns a card) and removes it from deck.
+        ''' Pickup a card. (Returns a card obj) and removes it from deck.
         This card gets put in picked_up_deck[]
         If no cards in deck, a new deck is created
 

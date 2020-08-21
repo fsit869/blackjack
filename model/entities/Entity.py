@@ -41,12 +41,12 @@ class Entity():
     def get_name(self):
         return self.name
 
-    def add_card(self, CARD):
-        ''' Add a card to the entity
+    def add_card(self, card_obj):
+        ''' Add a card to the entity. *Card objects
 
         :return:
         '''
-        self.entity_cards.append(CARD)
+        self.entity_cards.append(card_obj)
 
     def get_cards(self):
         ''' Get players cards

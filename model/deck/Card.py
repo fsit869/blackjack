@@ -42,3 +42,6 @@ class Card():
         '''
         return self.CARDVALUE
 
+    def get_card_constant(self):
+        return self.CARDCONSTANT
+

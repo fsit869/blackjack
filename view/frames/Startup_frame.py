@@ -11,14 +11,14 @@ from view import IFrame, Image_label
 from view.frames.subframes import Copyright_window
 
 class Startup_frame(IFrame.IFrame):
-    def __init__(self, view, parent, top_level, style, callbacks):
+    def __init__(self, view, parent, root, top_level, style, callbacks):
         ''' Constructor to create Startup_frame
         ;:param view: View layer
         :param parent: Parent
         :param top_level: Toplevel
         :param style: Style
         '''
-        super().__init__(view, parent, top_level, style, callbacks)
+        super().__init__(view, parent, root, top_level, style, callbacks)
         self.set_frame_name()
         self.STARTUP_FRAME_WIDTH = int(self.view.SCREEN_WIDTH / 4)
         self.STARTUP_FRAME_HEIGHT = int(self.view.SCREEN_HEIGHT / 1.5)
@@ -103,3 +103,15 @@ class Startup_frame(IFrame.IFrame):
                 return True
 
         return False
+
+    def _resize_min_root(self):
+        ''' Resize frame and apply min size
+
+        :return:
+        '''
+        self.view.set_root_min_size(
+            int(self.view.SCREEN_WIDTH / 4),
+            int(self.view.SCREEN_HEIGHT / 1.5)
+        )
+        self.root.geometry("{}x{}".format(int(self.view.SCREEN_WIDTH / 4), int(self.view.SCREEN_HEIGHT / 1.5)))
+        self.top_level.state('normal')

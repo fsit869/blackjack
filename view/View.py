@@ -119,7 +119,7 @@ class View():
         '''
         for frame_class in frames_to_init:
             frame_object = frame_class(
-                view=self, parent=self.root, top_level=self.root,
+                view=self, parent=self.root, root=self.root, top_level=self.root,
                 style=self.style, callbacks=self.callbacks
             )  # Create frame obj
             frame_name = frame_object.toString() # Method all IFrame's have
