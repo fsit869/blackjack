@@ -4,6 +4,7 @@ THis file contains the model layer of the MVC model.
 Interacts with the controller and model objects.
 
 '''
+import random
 from model.deck import Deck, Card
 from model.entities import Entity
 from random import shuffle
@@ -29,12 +30,12 @@ class GameModel():
         if human_players<1 or human_players>1:
             raise AttributeError("Currently only one player is supported")
         else:
-            self.player_order.append(Entity.Entity(True, "You"))
+            self.player_order.append(Entity.Entity(False, "You"))
 
         # Create Bots
         _bot_name = 1
         for i in range(amt_bots):
-            self.player_order.append(Entity.Entity(False, "bot_"+str(_bot_name)))
+            self.player_order.append(Entity.Entity(True, "bot_"+str(_bot_name)))
             _bot_name += 1
 
         # Shuffle player order
@@ -52,8 +53,10 @@ class GameModel():
     def current_entity_hit(self):
         picked_up_card = self.deck.pickup_card()
         self.current_player.add_card(picked_up_card)
-        if self.current_player.get_is_bot() == True:
-            self.cards_to_display.append(picked_up_card.get_card_constant()) # todo
+
+        # If current entity not bot, make sure GUI displays picked up card
+        if self.current_player.get_is_bot() == False: #
+            self.cards_to_display.append(picked_up_card.get_card_constant())
 
     def current_entity_set_status(self, PLAYERCONSTANT):
         self.current_player.set_status(PLAYERCONSTANT)
@@ -99,14 +102,19 @@ class GameModel():
 
         return dict_format
 
-    def get_players_alive(self):
-        pass
-        #todo
+    def get_player_win_status(self): # might need to check if player is stood. If stood need to skip
+        card_sum = self.get_card_total()
+        if card_sum== 21:
+            return PLAYERCONSTANTS.WIN
+        elif card_sum<21:
+            return PLAYERCONSTANTS.ALIVE
+        else:
+            return PLAYERCONSTANTS.BUST
 
-    def return_new_player_status(self): # might need to check if player is stood. If stood need to skip
+    def get_card_total(self):
         entity_cards_objs = self.current_player.get_cards()
-        single_value_sum = 0 # All card with one values added. EG 2 has val 2
-        ace_values = [] # Contains all aces values
+        single_value_sum = 0  # All card with one values added. EG 2 has val 2
+        ace_values = []  # Contains all aces values
         for card in entity_cards_objs:
             card_value = card.get_value()
             if type(card_value) == int:
@@ -119,21 +127,79 @@ class GameModel():
         card_sum = 0 + single_value_sum
         iterator = 0
         while True:
-            if card_sum+sum(ace_values) == 21:
-                print(card_sum+sum(ace_values))
-                return PLAYERCONSTANTS.WIN
-            elif card_sum+sum(ace_values)<21:
-                print(card_sum + sum(ace_values))
-                return PLAYERCONSTANTS.ALIVE
+            if card_sum + sum(ace_values) == 21:
+                card_sum += sum(ace_values)
+                break
+            elif card_sum + sum(ace_values) < 21:
+                card_sum + sum(ace_values)
+                break
             else:
-                if iterator<len(ace_values):
+                if iterator < len(ace_values):
                     ace_values[iterator] = 1
                     iterator += 1
                 else:
-                    return PLAYERCONSTANTS.BUST
+                    card_sum += sum(ace_values)
+                    break
+        return card_sum
 
-    def is_current_entity_bot(self):
+    def get_current_entity_status(self):
+        return self.current_player.get_status()
+
+    def get_current_entity_is_bot(self):
         return self.current_player.get_is_bot()
+
+    def get_bot_decision(self):
+        '''
+        Sector          *   Deck sum * Stand threshold  * Variability
+        ----------------*------------*------------------*------------
+        sector_one      *   0  - 10  * 0%               * 0%
+        sector_two      *   11 - 15  * 10%              * 0-10%
+        sector_three    *   16 - 18  * 50%              * 0-8%
+        sector_four     *   19 - 20  * 90%              * 0-6%
+        sector_five     *   21       * 99%              * 0%
+
+        :return:
+        '''
+        card_sum = self.get_card_total()
+        action = None
+
+        SECTOR_ONE_STAND_THRESHOLD = 0
+        SECTOR_TWO_STAND_THRESHOLD = 0.1
+        SECTOR_THREE_STAND_THRESHOLD = 0.5
+        SECTOR_FOUR_STAND_THRESHOLD = 0.9
+        SECTOR_FIVE_STAND_THRESHOLD = 0.99
+
+        SECTOR_ONE_STAND_MAX_VARIABILITY = 0
+        SECTOR_TWO_STAND_MAX_VARIABILITY = 0.1
+        SECTOR_THREE_STAND_MAX_VARIABILITY = 0.08
+        SECTOR_FOUR_STAND_MAX_VARIABILITY = 0.06
+        SECTOR_FIVE_STAND_MAX_VARIABILITY = 0
+
+        def calculate_action(STAND_THRESHOLD, MAX_VARIABILITY):
+            _random_double = random.random()
+            _varability = random.uniform(0, MAX_VARIABILITY)
+            if _random_double < (STAND_THRESHOLD + _varability):
+                return PLAYERCONSTANTS.STAND
+            else:
+                return PLAYERCONSTANTS.HIT
+
+        if card_sum <= 10:
+            action = calculate_action(SECTOR_ONE_STAND_THRESHOLD, SECTOR_ONE_STAND_MAX_VARIABILITY)
+        elif (card_sum>10) and (card_sum<16):
+            action = calculate_action(SECTOR_THREE_STAND_THRESHOLD, SECTOR_TWO_STAND_MAX_VARIABILITY)
+        elif (card_sum > 15) and (card_sum < 19):
+            action = calculate_action(SECTOR_THREE_STAND_THRESHOLD, SECTOR_THREE_STAND_MAX_VARIABILITY)
+        elif (card_sum > 18) and (card_sum < 21):
+            action = calculate_action(SECTOR_THREE_STAND_THRESHOLD, SECTOR_FOUR_STAND_MAX_VARIABILITY)
+        elif card_sum == 21:
+            action = calculate_action(SECTOR_THREE_STAND_THRESHOLD, SECTOR_FIVE_STAND_MAX_VARIABILITY)
+        else:
+            raise AttributeError("Card sum > 21, No action can be done")
+        return action
+
+    def get_entity_name(self):
+        return self.current_player.get_name()
+
 
 
 
