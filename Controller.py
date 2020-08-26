@@ -20,13 +20,15 @@ class Controller(tk.Tk):
             "startup_game": self.start_game,
             "on_stand": self.on_stand_button,
             "on_hit": self.on_hit_button,
-            "quit_program": self.quit_program
+            "quit_program": self.quit_program,
+            "start_frame": self._goto_start_frame,
         }
         self.view = View.View(self, "Blackjack", self.callbacks) # View object
         self.model = GameModel.GameModel()
 
         # Init commands
         self.view.show_frame("Startup_frame")
+        # self.view.show_frame("End_frame")
 
     def start_game(self):
         ''' Called at end of startup_frame.
@@ -54,13 +56,14 @@ class Controller(tk.Tk):
 
         :return:
         '''
-        self.view.update_frame(self.model.get_update_commands())
+        self.view.update_frame(self.model.get_update_commands()) # Todo possibily remove
         current_entity_status = self.model.get_player_win_status()
         if (current_entity_status == PLAYERCONSTANTS.WIN) and (self.model.get_current_entity_status()==PLAYERCONSTANTS.STOOD):
             # CHeck if player stood to win
+            self.model.current_entity_set_win()
             print("Game winner")
-            # self.view.show_frame("Startup_frame")
-            return
+            self.end_game()
+            return None
         elif current_entity_status == PLAYERCONSTANTS.BUST:
             self.model.current_entity_set_status(PLAYERCONSTANTS.BUST)
 
@@ -68,8 +71,8 @@ class Controller(tk.Tk):
             self.model.next_entity()
         else:
             print("Game end")
-            # self.view.show_frame("Startup_frame")
-            return
+            self.end_game()
+            return None
 
         if self.model.get_current_entity_is_bot():
             # todo bot calculations here, must disable player GUI buttons
@@ -86,6 +89,10 @@ class Controller(tk.Tk):
 
         self.view.update_frame(self.model.get_update_commands())
 
+    def end_game(self):
+        self.view.show_frame("End_frame")
+        self.view.update_frame(self.model.get_end_game_stats())
+
     def quit_program(self): # todo maybe move this to view??? IDK
         ''' Safely quit from program
         :return: None
@@ -95,3 +102,6 @@ class Controller(tk.Tk):
         if quit == True:
             logging.info("Program quitting")
             exit()
+
+    def _goto_start_frame(self):
+        self.view.show_frame("Startup_frame")

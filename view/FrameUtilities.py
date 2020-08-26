@@ -46,7 +46,7 @@ class FrameUtitlies:
         return answer
 
     @staticmethod
-    def unpack_all_widgets(self, window_to_unpack):
+    def unpack_all_widgets(window_to_unpack):
         ''' Unpack all widgets from a specified frame/root
 
         :param window_to_ungrid: Frame/root object to ungrid
@@ -58,7 +58,7 @@ class FrameUtitlies:
             widget.pack_forget()
 
     @staticmethod
-    def ungrid_all_widgets(self, window_to_ungrid):
+    def ungrid_all_widgets(window_to_ungrid):
         ''' Unpack all widgets from a specified frame/root
 
         :param window_to_ungrid: Frame/root object to ungrid
@@ -70,7 +70,7 @@ class FrameUtitlies:
             widget.grid_forget()
 
     @staticmethod
-    def destory_children(self, parent_frame):
+    def destory_children(parent_frame):
         ''' Destroy all children from a frame
 
         :param parent_frame: Frame to destroy children

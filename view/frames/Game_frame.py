@@ -23,7 +23,7 @@ class Game_frame(IFrame.IFrame):
         :param callbacks: Callbacks to access
         '''
         self._playersdict = None # Current players displayed.
-        self._cards = None # Current cards displayed
+        self._cards = [] # Current cards displayed
         self._alarm_handler_obj = None # Reference for Config _on_resize
 
         # Frame settings
@@ -90,11 +90,11 @@ class Game_frame(IFrame.IFrame):
             [CARDCONSTANTS.FOUR_S, CARDCONSTANTS._FIVE_C]
         }
 
-        :param dict:
-        :return:
+       "DISABLE_INPUT": boolean
         '''
         self.update_player_display(dict.get(PLAYERCONSTANTS))
         self.update_card_display(dict.get(CARDCONSTANTS))
+        self.disable_player_buttons(dict.get("DISABLE_INPUT"))
 
     def update_player_display(self, playersdict):
         ''' Updates the player board
@@ -104,7 +104,7 @@ class Game_frame(IFrame.IFrame):
         # self._playersdict = playersdict.copy() # Players_dict never none thus copy used # todo check why it was outside if loop
         if playersdict != None:
             self._playersdict = playersdict.copy()
-            FrameUtitlies.destory_children(self, self.top_frame)
+            FrameUtitlies.destory_children(self.top_frame)
             # playersdict = self.callbacks.get("game.getPlayers")()  # {str(current_player):player, str(player):bool(status)}
             current_turn = playersdict.pop("current_turn")
 
@@ -132,7 +132,7 @@ class Game_frame(IFrame.IFrame):
             # Get max size of cards
             card_width = (self.view.get_root_width() / len(cards)) - 10 # -20 To allow space in side
             max_height = int(self.view.get_root_height() / 2.5) # Max pixel height of cards. (Prevents oversize)
-            FrameUtitlies.destory_children(self, self.mid_frame)
+            FrameUtitlies.destory_children(self.mid_frame)
             # Find ratio of card to fit into frame
             while(True):
                 # Original card sizes
@@ -156,7 +156,7 @@ class Game_frame(IFrame.IFrame):
                 img.pack(side=tk.LEFT)
         elif len(cards) == 0:
             # Clear cards if present
-            FrameUtitlies.destory_children(self, self.mid_frame)
+            FrameUtitlies.destory_children(self.mid_frame)
 
     def disable_player_buttons(self, bool):
         ''' Deactivate player buttons

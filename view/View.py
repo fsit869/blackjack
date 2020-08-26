@@ -9,7 +9,7 @@ import logging
 from tkinter import messagebox
 from view import Style
 from view.FrameUtilities import FrameUtitlies
-from view.frames import Startup_frame, Game_frame
+from view.frames import Startup_frame, Game_frame, End_frame
 
 
 
@@ -28,6 +28,7 @@ class View():
         self.frames_to_init = [
             Startup_frame.Startup_frame,
             Game_frame.Game_frame,
+            End_frame.End_frame,
         ]
         self.frame_objects = {}  # Stores initlized frames {frame_name: frame_obj}
 
@@ -46,7 +47,6 @@ class View():
         # Create frames
         self._create_frames(self.frames_to_init)
 
-
     def set_root_min_size(self, width, height):
         ''' Set min size of root
 
@@ -62,7 +62,7 @@ class View():
         :param frame_name: Frame to show
         :return: None
         '''
-        FrameUtitlies.ungrid_all_widgets(self, self.root) # Forget all items on root
+        FrameUtitlies.ungrid_all_widgets(self.root) # Forget all items on root
         frame_to_display = self.frame_objects.get(frame_name) # Get frame to display
         if frame_to_display == None:
             raise FileNotFoundError("Failed to load frame [{}]".format(frame_to_display))

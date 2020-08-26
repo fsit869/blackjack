@@ -52,3 +52,7 @@ class Style(ttk.Style):
                  background=[('disabled', 'grey')],
                  foreground=[('disabled', "#403f3c")]
                  )
+
+        #############
+        # End Frame #
+        #############

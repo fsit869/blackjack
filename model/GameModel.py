@@ -14,11 +14,6 @@ from resources.CARDCONSTANTS import CARDCONSTANTS
 class GameModel():
     def __init__(self):
         pass
-        # self.entities = None # Dict containing players
-        # self.deck = None # Stores the deck
-        # self.current_player = None
-        # self.player_order = [] # Stores entity objs. This is player order
-        # self.cards_to_display = []
 
     def init_game(self, amt_bots, human_players=1):
         self.player_order = []  # Clears list
@@ -26,6 +21,7 @@ class GameModel():
         self.current_player = None
         self.deck = None
         self.entities = None
+        self.winner = None
 
         if human_players<1 or human_players>1:
             raise AttributeError("Currently only one player is supported")
@@ -61,6 +57,9 @@ class GameModel():
     def current_entity_set_status(self, PLAYERCONSTANT):
         self.current_player.set_status(PLAYERCONSTANT)
 
+    def current_entity_set_win(self):
+        self.winner = self.current_player
+
     def next_entity(self, _iterations=0):
         ''' Next entity turn thats still alive and not stood
 
@@ -90,7 +89,6 @@ class GameModel():
             PLAYERCONSTANTS: {
                 "current_turn": self.current_player.get_name(),
             },
-
             CARDCONSTANTS: self.cards_to_display
         }
 
@@ -99,6 +97,8 @@ class GameModel():
             player_status = player.get_status()
             player_card_amt = len(player.get_cards())
             dict_format[PLAYERCONSTANTS][player_name] = (player_status, player_card_amt)
+
+        dict_format["DISABLE_INPUT"] = self.current_player.get_is_bot()
 
         return dict_format
 
@@ -111,8 +111,12 @@ class GameModel():
         else:
             return PLAYERCONSTANTS.BUST
 
-    def get_card_total(self):
-        entity_cards_objs = self.current_player.get_cards()
+    def get_card_total(self, custom_entity=None):
+        if custom_entity != None:
+            entity_cards_objs = custom_entity.get_cards()
+        else:
+            entity_cards_objs = self.current_player.get_cards()
+
         single_value_sum = 0  # All card with one values added. EG 2 has val 2
         ace_values = []  # Contains all aces values
         for card in entity_cards_objs:
@@ -199,6 +203,53 @@ class GameModel():
 
     def get_entity_name(self):
         return self.current_player.get_name()
+
+    def get_end_game_stats(self):
+        '''
+        "winner": ENTITY_CLASS  (Or NONE if all BUST)
+        "players": player_list
+        :return:
+        '''
+        players_details = []
+        self._set_winner()
+
+        # Update winner if not already set
+        if self.winner != None:
+            winner_name = self.winner.get_name()
+        else:
+            winner_name = "No Winner"
+        # If set and determines its none, set it to no winner
+
+        for player in self.player_order:
+            _player_card_constants = []
+            for card in player.get_cards():
+                _player_card_constants.append(card.get_card_constant())
+
+            players_details.append(
+                (player.get_name(), player.get_status(), _player_card_constants)
+            )
+
+        return {
+            "winner_name" : winner_name,
+            "players": players_details
+        }
+
+    def _set_winner(self):
+        # Calculate winner if not already defined.
+        # Note It will be already defined if player reaches 21 and stands
+        if self.winner == None:
+            current_highest_entity = None
+            current_highest_card_total = 0
+            for player in self.player_order:
+                if (player.get_status() != PLAYERCONSTANTS.BUST):
+                    player_card_total = self.get_card_total(player)
+                    if player_card_total > current_highest_card_total:
+                        current_highest_card_total = player_card_total
+                        current_highest_entity = player
+                    elif player_card_total == current_highest_entity:
+                        self.winner = None
+            self.winner = current_highest_entity
+
 
 
 

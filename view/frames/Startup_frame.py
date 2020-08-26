@@ -52,7 +52,7 @@ class Startup_frame(IFrame.IFrame):
 
         # Input widgets
         self.input_widgets["amtOfBotsWidget"] = ttk.Spinbox(
-            input_frame, from_=1, to=4, textvariable=self.input_vars.get("amtOfBotsWidget"),
+            input_frame, from_=1, to=3, textvariable=self.input_vars.get("amtOfBotsWidget"),
             validate="all", validatecommand=(self.register(self._validate_numbers_only),'%d', '%P', '%S','%V', '%s')
         )
         self.input_widgets["botDelayCheckWidget"] = ttk.Checkbutton(
