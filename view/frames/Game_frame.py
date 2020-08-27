@@ -29,7 +29,7 @@ class Game_frame(IFrame.IFrame):
         # Frame settings
         super().__init__(view, parent, root,top_level, style, callbacks)
         self.set_frame_name()
-        self._resize_min_root() # todo possibly delete check
+        self._resize_min_root()
 
         self.columnconfigure(0, weight=1)
         # self.rowconfigure(0, weight=1)
@@ -101,7 +101,7 @@ class Game_frame(IFrame.IFrame):
 
         :return:
         '''
-        # self._playersdict = playersdict.copy() # Players_dict never none thus copy used # todo check why it was outside if loop
+        # self._playersdict = playersdict.copy() # Players_dict never none thus copy used
         if playersdict != None:
             self._playersdict = playersdict.copy()
             FrameUtitlies.destory_children(self.top_frame)

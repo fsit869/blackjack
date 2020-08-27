@@ -56,7 +56,7 @@ class Controller(tk.Tk):
 
         :return:
         '''
-        self.view.update_frame(self.model.get_update_commands()) # Todo possibily remove
+        # self.view.update_frame(self.model.get_update_commands()) # Todo possibily remove, keep if u want lag lmao
         current_entity_status = self.model.get_player_win_status()
         if (current_entity_status == PLAYERCONSTANTS.WIN) and (self.model.get_current_entity_status()==PLAYERCONSTANTS.STOOD):
             # CHeck if player stood to win
@@ -75,7 +75,6 @@ class Controller(tk.Tk):
             return None
 
         if self.model.get_current_entity_is_bot():
-            # todo bot calculations here, must disable player GUI buttons
             # todo bot delay, must have some indicator??
             # Must check less than= 21 to do perform
             if self.model.get_card_total() <=21:
@@ -97,10 +96,8 @@ class Controller(tk.Tk):
         ''' Safely quit from program
         :return: None
         '''
-        quit = self.view.question_msg_frame("Quit", "Would you like to quit?\n"
-                                                    "YOUR GAME WILL NOT BE SAVED!")
-        if quit == True:
-            logging.info("Program quitting")
+        quit = self.view.request_quit()
+        if quit:
             exit()
 
     def _goto_start_frame(self):

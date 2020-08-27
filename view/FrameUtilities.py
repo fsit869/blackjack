@@ -12,7 +12,7 @@ class FrameUtitlies:
         pass
 
     @staticmethod
-    def show_warning_frame(self, title, text):
+    def show_warning_frame(title, text):
         '''When called, Shows a msgbox warning type
 
         :param title: Title of msgbox
@@ -23,7 +23,7 @@ class FrameUtitlies:
         messagebox.showwarning(title, text)
 
     @staticmethod
-    def show_error_frame(self, title, text):
+    def show_error_frame(title, text):
         '''When called, shows msgbox error type
 
         :param title: Title of msgbox
@@ -34,7 +34,7 @@ class FrameUtitlies:
         messagebox.showerror(title, text)
 
     @staticmethod
-    def question_msg_frame(self, title, text):
+    def question_msg_frame(title, text):
         ''' When called, shows msgbox question type
 
         :param title: Title of msgbox

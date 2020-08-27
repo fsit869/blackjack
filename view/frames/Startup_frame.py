@@ -65,7 +65,7 @@ class Startup_frame(IFrame.IFrame):
         ###########
         # Buttons #
         ###########
-        ttk.Button(self, text="Quit", style="quit.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=(5, 40), side=tk.BOTTOM)
+        ttk.Button(self, text="Quit", command=self.callbacks.get("quit_program"),style="quit.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=(5, 40), side=tk.BOTTOM)
         ttk.Button(self, text="Copyright", command=self._on_copyright_button, style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
         ttk.Button(self, text="Help", style="help.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
         ttk.Button(self, text="Play", command=self.callbacks.get("startup_game"), style="play.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)

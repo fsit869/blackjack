@@ -1,7 +1,7 @@
 
 import tkinter as tk
 from tkinter import ttk
-from view import IFrame, FrameUtilities
+from view import IFrame, FrameUtilities, Image_label
 
 
 class End_frame(IFrame.IFrame):
@@ -31,13 +31,11 @@ class End_frame(IFrame.IFrame):
         _command_frame.pack(fill=tk.BOTH, pady=10, padx=40, expand=1, side=tk.BOTTOM)
 
         ttk.Button(_command_frame, text="Play Again", command=callbacks.get("start_frame")).pack(side=tk.LEFT, padx=5, pady=5, fill=tk.BOTH, expand=1)
-        ttk.Button(_command_frame, text="Quit").pack(side=tk.RIGHT, padx=5, pady=5, fill=tk.BOTH, expand=1)
+        ttk.Button(_command_frame, text="Quit", command=self.callbacks.get("quit_program")).pack(side=tk.RIGHT, padx=5, pady=5, fill=tk.BOTH, expand=1)
 
     def update_frame(self, dict):
         # todo Bug where this function is called 3 times. Cant identify where its coming from
         current_row = 2
-        current_column = 0
-
 
         winner = dict.get("winner_name")
         players = dict.get("players")
@@ -51,7 +49,13 @@ class End_frame(IFrame.IFrame):
                 cards = player[2]
                 ttk.Label(self.player_display_frame, text=name).grid(row=current_row, column=0)
                 ttk.Label(self.player_display_frame, text=status).grid(row=current_row, column=1)
-                ttk.Label(self.player_display_frame, text=cards).grid(row=current_row, column=2)
+                # ttk.Label(self.player_display_frame, text=cards).grid(row=current_row, column=2)
+                current_column = 3
+                for card in cards:
+                    card = Image_label.Image_label(self.player_display_frame, card, card.IMAGELOCATION())
+                    card.resize_image_width_pixel_ratio(80)
+                    card.grid(row=current_row, column=current_column)
+                    current_column += 1
                 current_row += 1
 
     def set_frame_name(self):

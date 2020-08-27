@@ -40,7 +40,7 @@ class View():
 
         # Config root settings
         self.root.title(application_name)
-        # self.root.protocol('WM_DELETE_WINDOW', callbacks.get("quit_program")) # todo fix
+        self.root.protocol('WM_DELETE_WINDOW', callbacks.get("quit_program"))
         self.SCREEN_WIDTH = self.root.winfo_screenwidth()  # Display width
         self.SCREEN_HEIGHT = self.root.winfo_screenheight()  # Display height
 
@@ -66,7 +66,6 @@ class View():
         frame_to_display = self.frame_objects.get(frame_name) # Get frame to display
         if frame_to_display == None:
             raise FileNotFoundError("Failed to load frame [{}]".format(frame_to_display))
-            # todo better exception, maybe exit code 1.
 
         self.root.columnconfigure(index=0, weight=1)
         self.root.rowconfigure(index=0, weight=1)
@@ -109,6 +108,11 @@ class View():
 
     def get_current_frame_name(self):
         return self.current_frame.toString()
+
+    def request_quit(self):
+        quit = FrameUtitlies.question_msg_frame("Quit", "Would you like to quit?\n"
+                                                    "YOUR GAME WILL NOT BE SAVED!")
+        return quit
 
     def _create_frames(self, frames_to_init):
         ''' Private method. Creates all frames listed in constructor and stores in self._frame_objects dict
