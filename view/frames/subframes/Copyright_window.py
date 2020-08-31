@@ -60,6 +60,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 Blackjack program is designed and developed by Frank Situ for educational purposes.
 Copying this program without permission is prohibited.
+Cards imgs from http://acbl.mybigcommerce.com/52-playing-cards/
         """).grid(row=0, column=0, sticky=tk.NSEW)
 
         ttk.Button(self, text="Agree", command=self.on_ok_button).grid(row=1, column=0, sticky=tk.NSEW)

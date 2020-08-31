@@ -81,6 +81,9 @@ class PlayerFrame(tk.Canvas):
         self.widgets["is_player_alive"].configure(text="BUST")
 
     def _disable_widgets(self):
-        # todo need to ignore card symbol & amt
+        ''' Disable widgets
+
+        :return:
+        '''
         for widget_name, widget_object in self.widgets.items():
             widget_object.configure(state=tk.DISABLED)

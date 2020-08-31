@@ -43,7 +43,7 @@ class Startup_frame(IFrame.IFrame):
 
         # Input labels
         ttk.Label(input_frame, text="Bots: ").grid(row=0, column=0, sticky=tk.W)
-        ttk.Label(input_frame, text="Disable Bot Delay:").grid(row=1, column=0, sticky=tk.W)
+        ttk.Label(input_frame, text="Enable Bot Delay:").grid(row=1, column=0, sticky=tk.W)
 
         # Input variables
         self.input_vars["amtOfBotsWidget"] = tk.IntVar()
@@ -71,12 +71,21 @@ class Startup_frame(IFrame.IFrame):
         ttk.Button(self, text="Play", command=self.callbacks.get("startup_game"), style="play.startUpFrame.TButton").pack(fill=tk.X, padx=25, pady=5, side=tk.BOTTOM)
 
     def set_frame_name(self):
+        ''' Set frame name
+
+        :return:
+        '''
         return "Startup_frame"
 
     def _on_help_button(self):
+        ''' Called when help button pressed'''
         pass
 
     def _on_copyright_button(self):
+        ''' Called when copyright button pressed
+
+        :return:
+        '''
         copyright_window = Copyright_window.Copyright_window()
 
     def _validate_numbers_only(self, action, value_if_allowed, text, trigger_type, text_before_change):

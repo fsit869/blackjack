@@ -10,6 +10,9 @@ from random import shuffle
 
 class Deck():
     def __init__(self):
+        ''' Creates a deck of 52 with no jokers
+
+        '''
         self.deck = []
         self.picked_up_deck = []
 
@@ -24,7 +27,7 @@ class Deck():
         self.deck.clear()
         self.picked_up_deck.clear()
 
-        for CONSTANT in CARDCONSTANTS.CARDCONSTANTS.get_all_cards(): # todo may crash
+        for CONSTANT in CARDCONSTANTS.CARDCONSTANTS.get_all_cards():
             self.deck.append(Card.Card(CONSTANT))
         self.shuffle_deck()
 
@@ -40,7 +43,7 @@ class Deck():
         This card gets put in picked_up_deck[]
         If no cards in deck, a new deck is created
 
-        :return:
+        :return: Card
         '''
         if not self.check_deck_empty():
             picked_up_card = self.deck.pop(0)

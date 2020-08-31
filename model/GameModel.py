@@ -13,9 +13,20 @@ from resources.CARDCONSTANTS import CARDCONSTANTS
 
 class GameModel():
     def __init__(self):
+        ''' Nothing happens in contstuctor
+
+        '''
         pass
 
     def init_game(self, amt_bots, human_players=1):
+        ''' Create a new game
+
+        :param amt_bots: int, amt bots
+        :param human_players: amt humans, NOTE CURRENTLY ONE 1 PLAYER SUPPORTED
+        :return:
+        '''
+
+        # Public vars
         self.player_order = []  # Clears list
         self.cards_to_display = []
         self.current_player = None
@@ -23,6 +34,7 @@ class GameModel():
         self.entities = None
         self.winner = None
 
+        # Check for only 1 player, as it is only supported one
         if human_players<1 or human_players>1:
             raise AttributeError("Currently only one player is supported")
         else:
@@ -44,9 +56,17 @@ class GameModel():
         self.current_player = self.player_order[0]
 
     def current_entity_stand(self):
+        ''' Stand current player
+
+        :return: none
+        '''
         self.current_player.set_status(PLAYERCONSTANTS.STOOD)
 
     def current_entity_hit(self):
+        ''' Current player hit
+
+        :return: None
+        '''
         picked_up_card = self.deck.pickup_card()
         self.current_player.add_card(picked_up_card)
 
@@ -55,9 +75,18 @@ class GameModel():
             self.cards_to_display.append(picked_up_card.get_card_constant())
 
     def current_entity_set_status(self, PLAYERCONSTANT):
+        ''' Set current player status
+
+        :param PLAYERCONSTANT:
+        :return:
+        '''
         self.current_player.set_status(PLAYERCONSTANT)
 
     def current_entity_set_win(self):
+        ''' Set current player as winner
+
+        :return:
+        '''
         self.winner = self.current_player
 
     def next_entity(self, _iterations=0):
@@ -79,12 +108,20 @@ class GameModel():
             self.next_entity(_iterations=_iterations)
 
     def is_game_playable(self):
+        ''' Check if there are any playable entities left
+
+        :return:
+        '''
         for player in self.player_order:
             if player.get_status() == PLAYERCONSTANTS.ALIVE:
                 return True
         return False
 
     def get_update_commands(self):
+        ''' Get update commands as dict for view
+
+        :return: Dict
+        '''
         dict_format = {
             PLAYERCONSTANTS: {
                 "current_turn": self.current_player.get_name(),
@@ -102,7 +139,11 @@ class GameModel():
 
         return dict_format
 
-    def get_player_win_status(self): # might need to check if player is stood. If stood need to skip
+    def get_player_win_status(self):
+        ''' Check whether entity can win, bust or is still alive
+
+        :return:
+        '''
         card_sum = self.get_card_total()
         if card_sum== 21:
             return PLAYERCONSTANTS.WIN
@@ -112,6 +153,13 @@ class GameModel():
             return PLAYERCONSTANTS.BUST
 
     def get_card_total(self, custom_entity=None):
+        ''' Get total value of cards
+
+        :param custom_entity: Custom entity to checx
+        :return:
+        '''
+
+        # Get cards
         if custom_entity != None:
             entity_cards_objs = custom_entity.get_cards()
         else:
@@ -128,6 +176,7 @@ class GameModel():
             else:
                 raise AttributeError("Invalid type")
 
+        # Set all aces to 11, and check sum. If over 21, change an 11 to 1
         card_sum = 0 + single_value_sum
         iterator = 0
         while True:
@@ -147,9 +196,17 @@ class GameModel():
         return card_sum
 
     def get_current_entity_status(self):
+        ''' Get current entity status
+
+        :return:
+        '''
         return self.current_player.get_status()
 
     def get_current_entity_is_bot(self):
+        ''' Get if entity bot
+
+        :return:
+        '''
         return self.current_player.get_is_bot()
 
     def get_bot_decision(self):
@@ -202,10 +259,11 @@ class GameModel():
         return action
 
     def get_entity_name(self):
+        '''Get entity name'''
         return self.current_player.get_name()
 
     def get_end_game_stats(self):
-        '''
+        ''' Get end game conclusion stats. For view
         "winner": ENTITY_CLASS  (Or NONE if all BUST)
         "players": player_list
         :return:
@@ -235,6 +293,10 @@ class GameModel():
         }
 
     def _set_winner(self):
+        ''' Calulate a winner. None if there is none
+
+        :return:
+        '''
         # Calculate winner if not already defined.
         # Note It will be already defined if player reaches 21 and stands
         if self.winner == None:

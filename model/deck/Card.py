@@ -7,11 +7,9 @@ from resources import CARDCONSTANTS
 
 class Card():
     def __init__(self, CARDCONSTANT):
-        ''' Creates a card. The parameters are implemented this way to allow for dynamic changing
-        of the card reference (img location) and its value.
+        ''' Create a card
 
-        :param card_name: Card constant eg TEN_C, FIVE_H...
-        :param card_value: Card constant val eg TEN_C_VAL, FIVE_H_VAL
+        :param CARDCONSTANT: CARDCONSTANT from resources
         '''
         self.CARDCONSTANT = CARDCONSTANT
         self.CARD_NAME = self.CARDCONSTANT
@@ -43,5 +41,9 @@ class Card():
         return self.CARDVALUE
 
     def get_card_constant(self):
+        ''' Returns the card constant
+
+        :return: Cardconstant
+        '''
         return self.CARDCONSTANT
 

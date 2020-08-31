@@ -84,6 +84,10 @@ class View():
         self.current_frame.update_frame(dict)
 
     def get_inputs(self):
+        ''' Get inputs of frame
+
+        :return:
+        '''
         return self.current_frame.get_inputs()
 
     def get_root_width(self):
@@ -107,12 +111,28 @@ class View():
         return self.root.winfo_height()  # Root height
 
     def get_current_frame_name(self):
+        ''' Get name of frame current displayed
+
+        :return:
+        '''
         return self.current_frame.toString()
 
     def request_quit(self):
+        ''' Request to quit program
+
+        :return:
+        '''
         quit = FrameUtitlies.question_msg_frame("Quit", "Would you like to quit?\n"
                                                     "YOUR GAME WILL NOT BE SAVED!")
         return quit
+
+    def sleep_root(self, ms):
+        ''' Sleep root for ms
+
+        :param ms:
+        :return:
+        '''
+        self.root.after(ms)
 
     def _create_frames(self, frames_to_init):
         ''' Private method. Creates all frames listed in constructor and stores in self._frame_objects dict

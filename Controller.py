@@ -14,6 +14,9 @@ from resources.PLAYERCONSTANTS import PLAYERCONSTANTS
 
 class Controller(tk.Tk):
     def __init__(self):
+        ''' Constructor init callbacks and model and view
+
+        '''
         super().__init__()
         # Public variables
         self.callbacks = {
@@ -25,38 +28,49 @@ class Controller(tk.Tk):
         }
         self.view = View.View(self, "Blackjack", self.callbacks) # View object
         self.model = GameModel.GameModel()
+        self.bot_delay = False
+        self.BOT_DELAY_AMOUNT = 1000
 
-        # Init commands
+        # Display first frame when program started
         self.view.show_frame("Startup_frame")
-        # self.view.show_frame("End_frame")
+        # self.view.show_frame("End_frame") # Debugging here
 
     def start_game(self):
-        ''' Called at end of startup_frame.
+        ''' Called at end of startup_frame. Starts a game
 
         :return:
         '''
         startup_input_vals = self.view.get_inputs()
         amount_of_bots = startup_input_vals.get("amtOfBotsWidget")
-        bot_delay = startup_input_vals.get("botDelayCheckWidget") # todo maye have botdelay a slider. If 0 it off. seconds
+        self.bot_delay = startup_input_vals.get("botDelayCheckWidget")
         self.view.show_frame("Game_frame")
         self.model.init_game(amount_of_bots)
         self.view.update_frame(self.model.get_update_commands())
         self.game_loop()
 
-    def on_hit_button(self): # maybe for player add alil delay so can see wut he picked up???
+    def on_hit_button(self):
+        ''' Entity hits
+
+        :return:
+        '''
         self.model.current_entity_hit()
         self.game_loop()
 
     def on_stand_button(self):
+        ''' Entity stands
+
+        :return:
+        '''
         self.model.current_entity_stand()
         self.game_loop()
 
     def game_loop(self):
-        ''' Called when hit or stand button pressed
+        ''' Loops game program
 
         :return:
         '''
-        # self.view.update_frame(self.model.get_update_commands()) # Todo possibily remove, keep if u want lag lmao
+
+        # Check if current player can win/bust
         current_entity_status = self.model.get_player_win_status()
         if (current_entity_status == PLAYERCONSTANTS.WIN) and (self.model.get_current_entity_status()==PLAYERCONSTANTS.STOOD):
             # CHeck if player stood to win
@@ -67,6 +81,7 @@ class Controller(tk.Tk):
         elif current_entity_status == PLAYERCONSTANTS.BUST:
             self.model.current_entity_set_status(PLAYERCONSTANTS.BUST)
 
+        # Check if any more playable players
         if self.model.is_game_playable():
             self.model.next_entity()
         else:
@@ -74,9 +89,14 @@ class Controller(tk.Tk):
             self.end_game()
             return None
 
+        # Check if player is bot, if true, computer decides next move
         if self.model.get_current_entity_is_bot():
             # todo bot delay, must have some indicator??
             # Must check less than= 21 to do perform
+            if self.bot_delay:  # todo bot delay
+                self.view.update_frame(self.model.get_update_commands())
+                self.view.sleep_root(self.BOT_DELAY_AMOUNT)
+
             if self.model.get_card_total() <=21:
                 bot_action = self.model.get_bot_decision()
                 if bot_action == PLAYERCONSTANTS.STAND:
@@ -85,14 +105,19 @@ class Controller(tk.Tk):
                     self.on_hit_button()
                 else:
                     raise AttributeError("Unexpected error, did not get stand or hit")
-
         self.view.update_frame(self.model.get_update_commands())
 
+
+
     def end_game(self):
+        ''' End frame. Conclusion of program.
+
+        :return:
+        '''
         self.view.show_frame("End_frame")
         self.view.update_frame(self.model.get_end_game_stats())
 
-    def quit_program(self): # todo maybe move this to view??? IDK
+    def quit_program(self):
         ''' Safely quit from program
         :return: None
         '''
@@ -101,4 +126,8 @@ class Controller(tk.Tk):
             exit()
 
     def _goto_start_frame(self):
+        ''' Go back to first frame
+
+        :return:
+        '''
         self.view.show_frame("Startup_frame")

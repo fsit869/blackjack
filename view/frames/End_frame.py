@@ -34,7 +34,11 @@ class End_frame(IFrame.IFrame):
         ttk.Button(_command_frame, text="Quit", command=self.callbacks.get("quit_program")).pack(side=tk.RIGHT, padx=5, pady=5, fill=tk.BOTH, expand=1)
 
     def update_frame(self, dict):
-        # todo Bug where this function is called 3 times. Cant identify where its coming from
+        ''' Update end frame contents
+
+        :param dict:
+        :return:
+        '''
         current_row = 2
 
         winner = dict.get("winner_name")
@@ -59,6 +63,10 @@ class End_frame(IFrame.IFrame):
                 current_row += 1
 
     def set_frame_name(self):
+        ''' Sets name of frame.
+
+        :return:
+        '''
         return "End_frame"
 
     def _resize_min_root(self):
