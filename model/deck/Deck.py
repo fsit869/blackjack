@@ -50,7 +50,6 @@ class Deck():
             self.picked_up_deck.append(picked_up_card)
             return picked_up_card
         else:
-            # todo possibily add counter saying a new deck has been created. To allow for card counting
             self.new_deck()
             self.pickup_card()
 

@@ -11,7 +11,6 @@ from tkinter import ttk
 from view import Image_label
 from resources.PLAYERCONSTANTS import PLAYERCONSTANTS
 
-# todo if have time, display each player cards
 class PlayerFrame(tk.Canvas):
     def __init__(self, parent, player_name, player_colour, player_status, cards, is_current_turn=False):
         ''' Creates a player frame
@@ -24,7 +23,7 @@ class PlayerFrame(tk.Canvas):
         :param cards int, Amt of cards the player has.
         '''
         logging.info("Creating PlayerFRAME: {%s}", player_name)
-        super().__init__(parent, ) # name=player_name todo has this as arg, check purpose
+        super().__init__(parent, )
         self.player_colour = player_colour
         self.player_status = player_status
         self.is_current_turn = False

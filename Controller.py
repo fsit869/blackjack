@@ -91,9 +91,8 @@ class Controller(tk.Tk):
 
         # Check if player is bot, if true, computer decides next move
         if self.model.get_current_entity_is_bot():
-            # todo bot delay, must have some indicator??
             # Must check less than= 21 to do perform
-            if self.bot_delay:  # todo bot delay
+            if self.bot_delay:
                 self.view.update_frame(self.model.get_update_commands())
                 self.view.sleep_root(self.BOT_DELAY_AMOUNT)
 
